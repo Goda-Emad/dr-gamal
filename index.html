@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صيدلية النور — سيستم متكامل</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #0f1117;
+  --bg2: #161b27;
+  --bg3: #1e2536;
+  --bg4: #252d3d;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #e8eaf0;
+  --text2: #8b92a8;
+  --text3: #555f7a;
+  --green: #00d68f;
+  --green2: #00a36e;
+  --green-bg: rgba(0,214,143,0.1);
+  --green-border: rgba(0,214,143,0.25);
+  --red: #ff4d6d;
+  --red-bg: rgba(255,77,109,0.1);
+  --amber: #ffb547;
+  --amber-bg: rgba(255,181,71,0.1);
+  --blue: #4d9fff;
+  --blue-bg: rgba(77,159,255,0.1);
+  --purple: #a78bfa;
+  --purple-bg: rgba(167,139,250,0.1);
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  font-size: 14px;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 220px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.logo-area {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-icon {
+  width: 38px; height: 38px;
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 10px;
+}
+.logo-icon svg { width: 20px; height: 20px; stroke: var(--green); }
+.logo-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+.nav-group { padding: 12px 10px 4px; }
+.nav-label {
+  font-size: 10px; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 0 6px; margin-bottom: 4px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: 8px;
+  cursor: pointer; color: var(--text2);
+  font-size: 13px; font-weight: 500;
+  transition: all .15s; margin-bottom: 2px;
+  border: 1px solid transparent;
+  position: relative;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active {
+  background: var(--green-bg);
+  border-color: var(--green-border);
+  color: var(--green);
+}
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-badge {
+  margin-right: auto;
+  background: var(--red);
+  color: #fff; font-size: 10px;
+  border-radius: 8px; padding: 1px 6px;
+  font-weight: 700;
+}
+
+.ai-nav-btn {
+  margin: auto 10px 16px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(0,214,143,0.1));
+  border: 1px solid rgba(167,139,250,0.3);
+  border-radius: 10px; cursor: pointer;
+  color: var(--purple); font-size: 12px; font-weight: 600;
+  font-family: 'Cairo', sans-serif;
+  display: flex; align-items: center; gap: 8px;
+  transition: all .2s;
+}
+.ai-nav-btn:hover { border-color: var(--purple); }
+.ai-nav-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.ai-pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); margin-right: auto;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+/* ── Main ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.topbar {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg2);
+}
+.page-title { font-size: 16px; font-weight: 700; color: var(--text); flex: 1; }
+.barcode-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--green);
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  border-radius: 20px; padding: 4px 10px;
+}
+.barcode-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; }
+.topbar-date { font-size: 11px; color: var(--text3); }
+
+.content { flex: 1; overflow: hidden; }
+.panel { display: none; height: 100%; overflow-y: auto; }
+.panel.active { display: flex; flex-direction: column; }
+
+/* ── Stat Cards ── */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 12px; padding: 16px 20px;
+}
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+}
+.stat-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+.stat-val { font-size: 22px; font-weight: 700; color: var(--text); }
+.stat-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; margin-top: 4px;
+  padding: 2px 8px; border-radius: 20px; font-weight: 600;
+}
+.badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-purple { background: var(--purple-bg); color: var(--purple); }
+
+/* ── Toolbar ── */
+.toolbar { display: flex; align-items: center; gap: 8px; padding: 0 20px 12px; }
+.search-box {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 0 12px;
+}
+.search-box svg { width: 14px; height: 14px; stroke: var(--text3); flex-shrink: 0; }
+.search-box input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--text); font-size: 13px; font-family: 'Cairo', sans-serif;
+  padding: 8px 0;
+}
+.search-box input::placeholder { color: var(--text3); }
+
+.btn {
+  padding: 8px 14px; border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--bg2); color: var(--text);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  font-family: 'Cairo', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+  transition: all .15s;
+}
+.btn:hover { background: var(--bg3); border-color: var(--border2); }
+.btn svg { width: 14px; height: 14px; }
+.btn-green { background: var(--green); border-color: var(--green); color: #0a1a12; }
+.btn-green:hover { background: var(--green2); border-color: var(--green2); }
+.btn-red { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+/* ── Table ── */
+.tbl-wrap { flex: 1; overflow-y: auto; padding: 0 20px 20px; }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  text-align: right; padding: 8px 10px;
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap; letter-spacing: .04em;
+}
+tbody td {
+  padding: 10px 10px; font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2); vertical-align: middle;
+}
+tbody tr:hover td { background: var(--bg3); color: var(--text); }
+.drug-name { font-weight: 600; color: var(--text); }
+.barcode-text { font-family: monospace; font-size: 11px; color: var(--text3); letter-spacing: .05em; }
+.price-green { color: var(--green); font-weight: 600; }
+.action-btn {
+  background: none; border: 1px solid var(--border2);
+  border-radius: 6px; padding: 4px 10px;
+  color: var(--text2); font-size: 11px; cursor: pointer;
+  font-family: 'Cairo', sans-serif; transition: all .15s;
+}
+.action-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+
+/* ── POS Layout ── */
+.pos-layout { display: grid; grid-template-columns: 1fr 300px; flex: 1; overflow: hidden; }
+.pos-left { padding: 16px 20px; overflow-y: auto; border-left: 1px solid var(--border); }
+.pos-right { display: flex; flex-direction: column; padding: 16px; gap: 10px; overflow-y: auto; }
+
+.scan-zone {
+  border: 2px dashed var(--green-border);
+  border-radius: 12px; padding: 16px;
+  text-align: center; cursor: pointer;
+  background: var(--green-bg); margin-bottom: 14px;
+  transition: all .2s;
+}
+.scan-zone:hover { border-color: var(--green); }
+.scan-zone svg { width: 28px; height: 28px; stroke: var(--green); margin-bottom: 6px; }
+.scan-zone p { font-size: 12px; color: var(--green); font-weight: 600; }
+.scan-zone span { font-size: 11px; color: var(--text3); }
+
+.cart-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;
+}
+.cart-name { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+.cart-price { font-size: 11px; color: var(--text3); }
+.qty-ctrl { display: flex; align-items: center; gap: 6px; }
+.qty-btn {
+  width: 24px; height: 24px; border-radius: 6px;
+  border: 1px solid var(--border2); background: var(--bg3);
+  color: var(--text); cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.qty-btn:hover { border-color: var(--green); color: var(--green); }
+.qty-num { font-size: 13px; font-weight: 700; color: var(--text); min-width: 20px; text-align: center; }
+.cart-total { font-size: 13px; font-weight: 700; color: var(--green); min-width: 50px; text-align: left; }
+
+.summary-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px;
+}
+.summary-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+.summary-row {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--text3); padding: 4px 0;
+}
+.summary-total {
+  display: flex; justify-content: space-between;
+  font-size: 17px; font-weight: 700;
+  color: var(--text); padding: 12px 0 0;
+  border-top: 1px solid var(--border); margin-top: 8px;
+}
+.summary-total span:last-child { color: var(--green); }
+
+/* ── Forms ── */
+.form-wrap { padding: 16px 20px; overflow-y: auto; }
+.form-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px; max-width: 640px;
+}
+.form-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.form-sub { font-size: 12px; color: var(--text3); margin-bottom: 16px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 11px; color: var(--text3); font-weight: 600; letter-spacing: .03em; }
+.form-input {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 9px 12px;
+  color: var(--text); font-size: 13px;
+  font-family: 'Cairo', sans-serif; outline: none;
+  transition: border-color .15s;
+}
+.form-input:focus { border-color: var(--green); }
+.form-input::placeholder { color: var(--text3); }
+
+.price-section {
+  background: var(--bg3); border: 1px solid var(--green-border);
+  border-radius: 10px; padding: 14px; margin: 4px 0;
+}
+.price-section-title {
+  font-size: 12px; font-weight: 700; color: var(--green);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.margin-display {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg); border-radius: 8px; padding: 9px;
+  font-size: 16px; font-weight: 700; color: var(--green);
+  border: 1px solid var(--border);
+}
+.scan-input-row { display: flex; gap: 6px; }
+.scan-input-row input { flex: 1; }
+
+.form-actions { display: flex; gap: 8px; margin-top: 16px; }
+.form-actions .btn { flex: 1; justify-content: center; padding: 10px; }
+.success-msg {
+  display: none; margin-top: 12px; padding: 10px 14px;
+  background: var(--green-bg); border: 1px solid var(--green-border);
+  border-radius: 8px; font-size: 13px; color: var(--green); font-weight: 600;
+}
+
+/* ── AI Panel ── */
+.ai-layout { display: flex; flex-direction: column; height: 100%; }
+.ai-header {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg2);
+}
+.ai-avatar {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--purple-bg); border: 1px solid rgba(167,139,250,0.3);
+  display: flex; align-items: center; justify-content: center;
+}
+.ai-avatar svg { width: 18px; height: 18px; stroke: var(--purple); }
+.ai-info { flex: 1; }
+.ai-info strong { font-size: 14px; color: var(--text); display: block; }
+.ai-info span { font-size: 11px; color: var(--green); }
+.ollama-badge {
+  font-size: 10px; background: var(--bg3); border: 1px solid var(--border2);
+  padding: 4px 10px; border-radius: 20px; color: var(--text3);
+}
+
+.ai-messages { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.ai-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.ai-chip {
+  font-size: 11px; padding: 5px 12px;
+  border: 1px solid var(--border2); border-radius: 20px;
+  cursor: pointer; color: var(--text2); background: var(--bg2);
+  font-family: 'Cairo', sans-serif; transition: all .15s;
+}
+.ai-chip:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+
+.msg { max-width: 80%; }
+.msg-bot { align-self: flex-start; }
+.msg-user { align-self: flex-end; }
+.msg-bubble {
+  padding: 10px 14px; border-radius: 12px;
+  font-size: 13px; line-height: 1.65;
+}
+.msg-bot .msg-bubble {
+  background: var(--bg2); border: 1px solid var(--border);
+  color: var(--text); border-radius: 4px 12px 12px 12px;
+}
+.msg-user .msg-bubble {
+  background: var(--purple-bg); border: 1px solid rgba(167,139,250,0.2);
+  color: var(--text); border-radius: 12px 4px 12px 12px;
+}
+.msg-time { font-size: 10px; color: var(--text3); margin-top: 4px; }
+.msg-user .msg-time { text-align: left; }
+
+.typing-indicator {
+  display: none; align-self: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 4px 12px 12px 12px; padding: 12px 16px;
+  gap: 4px; align-items: center;
+}
+.typing-indicator.show { display: flex; }
+.typing-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text3); animation: typing .8s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: .15s; }
+.typing-dot:nth-child(3) { animation-delay: .3s; }
+@keyframes typing { 0%,100%{opacity:.3;transform:translateY(0)} 50%{opacity:1;transform:translateY(-3px)} }
+
+.ai-input-area {
+  padding: 14px 20px; border-top: 1px solid var(--border);
+  background: var(--bg2); display: flex; gap: 8px; align-items: flex-end;
+}
+.ai-input-wrap {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 10px; display: flex; align-items: center; gap: 8px;
+  padding: 0 12px;
+}
+.ai-input-wrap:focus-within { border-color: var(--purple); }
+.ai-input-wrap input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--text); font-size: 13px; font-family: 'Cairo', sans-serif;
+  padding: 10px 0;
+}
+.ai-input-wrap input::placeholder { color: var(--text3); }
+.ai-send {
+  width: 38px; height: 38px; border-radius: 8px;
+  background: var(--purple); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: opacity .15s;
+}
+.ai-send:hover { opacity: .85; }
+.ai-send svg { width: 16px; height: 16px; stroke: #fff; }
+
+/* ── Alerts ── */
+.alerts-wrap { padding: 16px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.alert-card {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 16px;
+}
+.alert-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.alert-icon svg { width: 18px; height: 18px; }
+.alert-body { flex: 1; }
+.alert-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.alert-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.alert-meta { text-align: left; }
+.alert-days { font-size: 20px; font-weight: 800; }
+.alert-days-label { font-size: 10px; color: var(--text3); }
+
+/* ── Reports ── */
+.reports-wrap { padding: 16px 20px; overflow-y: auto; }
+.chart-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.chart-bar-label { font-size: 12px; color: var(--text2); min-width: 120px; text-align: right; }
+.chart-bar-track { flex: 1; height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+.chart-bar-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width 1s; }
+.chart-bar-val { font-size: 12px; color: var(--text2); min-width: 60px; text-align: left; }
+
+/* ── Customers ── */
+.avatar-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/>
+      </svg>
+    </div>
+    <div class="logo-name">صيدلية النور</div>
+    <div class="logo-sub">سيستم إدارة متكامل v2.0</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">الرئيسية</div>
+    <div class="nav-item active" onclick="nav('inv',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      لوحة التحكم
+    </div>
+    <div class="nav-item" onclick="nav('pos',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      نقطة البيع (POS)
+    </div>
+    <div class="nav-item" onclick="nav('recv',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      استلام بضاعة
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">الإدارة</div>
+    <div class="nav-item" onclick="nav('customers',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      العملاء والوصفات
+    </div>
+    <div class="nav-item" onclick="nav('alerts',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      التنبيهات
+      <span class="nav-badge">4</span>
+    </div>
+    <div class="nav-item" onclick="nav('reports',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      التقارير والإحصائيات
+    </div>
+    <div class="nav-item" onclick="nav('suppliers',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      الموردون
+    </div>
+  </div>
+
+  <button class="ai-nav-btn" onclick="nav('ai',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><path d="M18 2l4 4-4 4"/><path d="M22 6H18"/></svg>
+    AI مساعد الصيدلي
+    <div class="ai-pulse"></div>
+  </button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="page-title" id="page-title">لوحة التحكم</span>
+    <div class="barcode-status">
+      <div class="barcode-dot"></div>
+      باركود متصل
+    </div>
+    <span class="topbar-date" id="top-date"></span>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ INVENTORY / DASHBOARD ══ -->
+    <div class="panel active" id="panel-inv">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">إجمالي الأصناف</div>
+          <div class="stat-val">248</div>
+          <span class="stat-badge badge-green">↑ 12 هذا الأسبوع</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">منخفض المخزون</div>
+          <div class="stat-val">12</div>
+          <span class="stat-badge badge-amber">تحتاج طلب</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">تنتهي صلاحيتها</div>
+          <div class="stat-val">4</div>
+          <span class="stat-badge badge-red">خلال 60 يوم</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">قيمة المخزون</div>
+          <div class="stat-val" style="font-size:18px">84,200 ج</div>
+          <span class="stat-badge badge-blue">محدّث الآن</span>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="inv-search" placeholder="ابحث بالاسم أو الباركود..." oninput="filterInv()"/>
+        </div>
+        <button class="btn" onclick="fakeScan('inv')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="3" height="18"/><rect x="9" y="3" width="1.5" height="18"/><rect x="13" y="3" width="2.5" height="18"/><rect x="18" y="3" width="3" height="18"/></svg>
+          مسح باركود
+        </button>
+        <button class="btn btn-green" onclick="nav('recv', document.querySelectorAll('.nav-item')[2])">+ إضافة دواء</button>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>اسم الدواء</th>
+              <th>الباركود</th>
+              <th>الكمية</th>
+              <th>سعر الشراء</th>
+              <th>سعر البيع</th>
+              <th>هامش الربح</th>
+              <th>الصلاحية</th>
+              <th>الحالة</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="inv-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ POS ══ -->
+    <div class="panel" id="panel-pos">
+      <div class="pos-layout">
+        <div class="pos-left">
+          <div class="scan-zone" onclick="addToCart()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="3" height="18"/><rect x="9" y="3" width="1.5" height="18"/><rect x="13" y="3" width="2.5" height="18"/><rect x="18" y="3" width="3" height="18"/></svg>
+            <p>اضغط أو امسح الباركود</p>
+            <span>لإضافة دواء للفاتورة</span>
+          </div>
+          <div id="cart-list"></div>
+          <div id="cart-empty" style="text-align:center;padding:30px;color:var(--text3);font-size:13px">
+            لا يوجد أصناف — ابدأ بمسح باركود
+          </div>
+        </div>
+        <div class="pos-right">
+          <div class="summary-card">
+            <div class="summary-title">تفاصيل الفاتورة</div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+              <div class="form-label">العميل (اختياري)</div>
+              <input class="form-input" placeholder="ابحث عن عميل..." style="font-size:12px"/>
+              <div class="form-label" style="margin-top:6px">نوع الدفع</div>
+              <select class="form-input" style="font-size:12px">
+                <option>نقدي</option>
+                <option>فيزا / ماستركارد</option>
+                <option>تحويل بنكي</option>
+              </select>
+            </div>
+            <div class="summary-row"><span>عدد الأصناف</span><span id="cart-count">0</span></div>
+            <div class="summary-row"><span>المجموع الفرعي</span><span id="pos-sub">0 ج</span></div>
+            <div class="summary-row">
+              <span>خصم</span>
+              <span style="display:flex;align-items:center;gap:4px">
+                <input id="discount" type="number" min="0" max="100" value="0" oninput="updateTotal()"
+                  style="width:42px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:2px 4px;font-size:11px;text-align:center;font-family:'Cairo',sans-serif"/>
+                %
+              </span>
+            </div>
+            <div class="summary-total">
+              <span>الإجمالي</span>
+              <span id="pos-total">0 ج</span>
+            </div>
+          </div>
+          <button class="btn btn-green" style="justify-content:center;padding:12px;font-size:13px" onclick="checkout()">
+            إتمام البيع — طباعة فاتورة
+          </button>
+          <button class="btn btn-red" style="justify-content:center" onclick="clearCart()">
+            إلغاء الفاتورة
+          </button>
+          <div style="margin-top:auto;font-size:11px;color:var(--text3);text-align:center">
+            يمكنك تغيير الكمية بأزرار + و −
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RECEIVE ══ -->
+    <div class="panel" id="panel-recv">
+      <div class="form-wrap">
+        <div class="form-card">
+          <div class="form-title">استلام بضاعة جديدة / تعديل دواء</div>
+          <div class="form-sub">امسح الباركود لملء البيانات تلقائياً — يمكنك تعديل السعر في كل مرة</div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">اسم الدواء</label>
+              <input class="form-input" id="r-name" placeholder="مثال: باراسيتامول 500mg"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الباركود</label>
+              <div class="scan-input-row">
+                <input class="form-input" id="r-barcode" placeholder="امسح أو اكتب الباركود"/>
+                <button class="btn" onclick="fakeScan('recv')" style="padding:8px 10px">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="3" height="18"/><rect x="9" y="3" width="1.5" height="18"/><rect x="13" y="3" width="2.5" height="18"/><rect x="18" y="3" width="3" height="18"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الكمية المستلمة</label>
+              <input class="form-input" id="r-qty" type="number" placeholder="0"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">وحدة القياس</label>
+              <select class="form-input" id="r-unit">
+                <option>علبة</option><option>شريط</option><option>زجاجة</option><option>حبة</option><option>أمبول</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <div class="price-section">
+                <div class="price-section-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  تسعير الدواء — يمكن تعديله في كل استلام
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                  <div class="form-group">
+                    <label class="form-label">سعر الشراء (ج)</label>
+                    <input class="form-input" id="r-buy" type="number" placeholder="0" oninput="calcMargin()"/>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">سعر البيع (ج)</label>
+                    <input class="form-input" id="r-sell" type="number" placeholder="0" oninput="calcMargin()"/>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">هامش الربح</label>
+                    <div class="margin-display" id="margin-show">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">تاريخ انتهاء الصلاحية</label>
+              <input class="form-input" id="r-exp" type="date"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">المورد</label>
+              <select class="form-input">
+                <option>شركة الدلتا للأدوية</option>
+                <option>النيل للأدوية</option>
+                <option>الشرق الأوسط للمستلزمات</option>
+                <option>مورد آخر</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الحد الأدنى للمخزون</label>
+              <input class="form-input" type="number" placeholder="مثال: 20"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">موقع التخزين</label>
+              <input class="form-input" placeholder="مثال: رف A - خانة 3"/>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">ملاحظات</label>
+              <input class="form-input" placeholder="أي ملاحظات على الدواء..."/>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-green" onclick="saveRecv()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              حفظ وإضافة للمخزون
+            </button>
+            <button class="btn">إلغاء</button>
+          </div>
+          <div class="success-msg" id="recv-ok">تم إضافة الدواء للمخزون بنجاح وتحديث السعر!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CUSTOMERS ══ -->
+    <div class="panel" id="panel-customers">
+      <div class="toolbar" style="padding-top:16px">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="ابحث بالاسم أو الموبايل..."/>
+        </div>
+        <button class="btn btn-green">+ عميل جديد</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>العميل</th><th>الموبايل</th><th>الزيارات</th><th>آخر زيارة</th><th>إجمالي المشتريات</th><th>ملاحظات طبية</th><th>إجراء</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="avatar-circle" style="background:var(--blue-bg);color:var(--blue)">أم</div>
+                  <span class="drug-name">أحمد محمد</span>
+                </div>
+              </td>
+              <td>01012345678</td><td>14</td><td>08/04/2026</td><td class="price-green">1,240 ج</td>
+              <td><span class="stat-badge badge-red">حساسية بنسلين</span></td>
+              <td><button class="action-btn">تفاصيل</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="avatar-circle" style="background:var(--purple-bg);color:var(--purple)">فا</div>
+                  <span class="drug-name">فاطمة سالم</span>
+                </div>
+              </td>
+              <td>01098765432</td><td>6</td><td>05/04/2026</td><td class="price-green">580 ج</td>
+              <td><span class="stat-badge badge-amber">مريضة ضغط</span></td>
+              <td><button class="action-btn">تفاصيل</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="avatar-circle" style="background:var(--green-bg);color:var(--green)">مح</div>
+                  <span class="drug-name">محمد إبراهيم</span>
+                </div>
+              </td>
+              <td>01155443322</td><td>21</td><td>10/04/2026</td><td class="price-green">3,100 ج</td>
+              <td>—</td>
+              <td><button class="action-btn">تفاصيل</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="avatar-circle" style="background:var(--amber-bg);color:var(--amber)">من</div>
+                  <span class="drug-name">منى خالد</span>
+                </div>
+              </td>
+              <td>01067891234</td><td>3</td><td>01/04/2026</td><td class="price-green">220 ج</td>
+              <td><span class="stat-badge badge-purple">حامل</span></td>
+              <td><button class="action-btn">تفاصيل</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ ALERTS ══ -->
+    <div class="panel" id="panel-alerts">
+      <div class="alerts-wrap">
+        <div class="alert-card" style="border-color:rgba(255,77,109,0.25)">
+          <div class="alert-icon" style="background:var(--red-bg)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="alert-body">
+            <div class="alert-title">أموكسيسيلين 500mg — قاربت على الانتهاء</div>
+            <div class="alert-sub">الكمية المتبقية: 4 علب · الحد الأدنى: 20 علبة</div>
+          </div>
+          <div class="alert-meta">
+            <div class="alert-days" style="color:var(--red)">4</div>
+            <div class="alert-days-label">علب متبقية</div>
+          </div>
+        </div>
+        <div class="alert-card" style="border-color:rgba(255,77,109,0.25)">
+          <div class="alert-icon" style="background:var(--red-bg)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="alert-body">
+            <div class="alert-title">كيتوكونازول كريم — صلاحية تنتهي قريباً</div>
+            <div class="alert-sub">تنتهي الصلاحية في 15 مايو 2026 · 7 علب متبقية</div>
+          </div>
+          <div class="alert-meta">
+            <div class="alert-days" style="color:var(--red)">35</div>
+            <div class="alert-days-label">يوم متبقي</div>
+          </div>
+        </div>
+        <div class="alert-card" style="border-color:rgba(255,181,71,0.25)">
+          <div class="alert-icon" style="background:var(--amber-bg)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="alert-body">
+            <div class="alert-title">باراسيتامول 500 — مخزون منخفض</div>
+            <div class="alert-sub">المتبقي 5 علب · الحد الأدنى 20 علبة</div>
+          </div>
+          <div class="alert-meta">
+            <div class="alert-days" style="color:var(--amber)">5</div>
+            <div class="alert-days-label">علب متبقية</div>
+          </div>
+        </div>
+        <div class="alert-card" style="border-color:rgba(255,181,71,0.25)">
+          <div class="alert-icon" style="background:var(--amber-bg)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="alert-body">
+            <div class="alert-title">فيتامين C فوار — مخزون منخفض</div>
+            <div class="alert-sub">المتبقي 8 علب · الحد الأدنى 15 علبة</div>
+          </div>
+          <div class="alert-meta">
+            <div class="alert-days" style="color:var(--amber)">8</div>
+            <div class="alert-days-label">علب متبقية</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ REPORTS ══ -->
+    <div class="panel" id="panel-reports">
+      <div class="reports-wrap">
+        <div class="stats-grid" style="padding:0 0 16px">
+          <div class="stat-card"><div class="stat-label">مبيعات اليوم</div><div class="stat-val">3,420 ج</div><span class="stat-badge badge-green">↑ 12% عن أمس</span></div>
+          <div class="stat-card"><div class="stat-label">مبيعات الشهر</div><div class="stat-val">48,700 ج</div><span class="stat-badge badge-blue">أبريل 2026</span></div>
+          <div class="stat-card"><div class="stat-label">صافي الربح</div><div class="stat-val" style="color:var(--green)">11,200 ج</div><span class="stat-badge badge-green">هامش 23%</span></div>
+          <div class="stat-card"><div class="stat-label">عدد الفواتير</div><div class="stat-val">287</div><span class="stat-badge badge-purple">هذا الشهر</span></div>
+        </div>
+
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">الأدوية الأكثر مبيعاً</div>
+          <div class="chart-bar-row"><div class="chart-bar-label">باراسيتامول 500</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:85%"></div></div><div class="chart-bar-val">6,800 ج</div></div>
+          <div class="chart-bar-row"><div class="chart-bar-label">أموكسيسيلين 500</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:65%;background:var(--blue)"></div></div><div class="chart-bar-val">9,000 ج</div></div>
+          <div class="chart-bar-row"><div class="chart-bar-label">أوميبرازول 20</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:50%;background:var(--purple)"></div></div><div class="chart-bar-val">4,750 ج</div></div>
+          <div class="chart-bar-row"><div class="chart-bar-label">فيتامين D3</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:40%;background:var(--amber)"></div></div><div class="chart-bar-val">4,200 ج</div></div>
+          <div class="chart-bar-row"><div class="chart-bar-label">ميتفورمين 500</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:30%;background:var(--red)"></div></div><div class="chart-bar-val">2,100 ج</div></div>
+        </div>
+
+        <div class="tbl-wrap" style="padding:0">
+          <table>
+            <thead><tr><th>الدواء</th><th>الكمية المباعة</th><th>إجمالي المبيعات</th><th>الربح</th><th>الهامش</th></tr></thead>
+            <tbody>
+              <tr><td class="drug-name">باراسيتامول 500</td><td>340</td><td>6,800 ج</td><td class="price-green">2,040 ج</td><td><span class="stat-badge badge-green">30%</span></td></tr>
+              <tr><td class="drug-name">أموكسيسيلين 500</td><td>180</td><td>9,000 ج</td><td class="price-green">1,800 ج</td><td><span class="stat-badge badge-green">20%</span></td></tr>
+              <tr><td class="drug-name">أوميبرازول 20</td><td>95</td><td>4,750 ج</td><td class="price-green">1,425 ج</td><td><span class="stat-badge badge-green">30%</span></td></tr>
+              <tr><td class="drug-name">فيتامين D3</td><td>60</td><td>4,200 ج</td><td class="price-green">840 ج</td><td><span class="stat-badge badge-amber">20%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SUPPLIERS ══ -->
+    <div class="panel" id="panel-suppliers">
+      <div class="toolbar" style="padding-top:16px">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="ابحث عن مورد..."/>
+        </div>
+        <button class="btn btn-green">+ مورد جديد</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>المورد</th><th>الموبايل</th><th>إجمالي المشتريات</th><th>المديونية</th><th>آخر توريد</th><th>الحالة</th></tr></thead>
+          <tbody>
+            <tr><td class="drug-name">شركة الدلتا للأدوية</td><td>0222345678</td><td>32,000 ج</td><td style="color:var(--red);font-weight:700">5,400 ج</td><td>09/04/2026</td><td><span class="stat-badge badge-red">مديون</span></td></tr>
+            <tr><td class="drug-name">النيل للأدوية</td><td>0223456789</td><td>18,500 ج</td><td class="price-green">0 ج</td><td>01/04/2026</td><td><span class="stat-badge badge-green">مسدد</span></td></tr>
+            <tr><td class="drug-name">الشرق الأوسط للمستلزمات</td><td>0224567890</td><td>9,200 ج</td><td class="price-green">0 ج</td><td>25/03/2026</td><td><span class="stat-badge badge-green">مسدد</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ AI AGENT ══ -->
+    <div class="panel" id="panel-ai">
+      <div class="ai-layout">
+        <div class="ai-header">
+          <div class="ai-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/><circle cx="19" cy="5" r="3"/></svg>
+          </div>
+          <div class="ai-info">
+            <strong>مساعد الصيدلي AI</strong>
+            <span>يعمل بـ Ollama — مجاني ومحلي</span>
+          </div>
+          <div>
+            <div class="ollama-badge">llama3.2 · محلي</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:center">بيانات لا تخرج من الجهاز</div>
+          </div>
+        </div>
+
+        <div class="ai-messages" id="ai-msgs">
+          <div class="msg msg-bot">
+            <div class="msg-bubble">
+              مرحباً! أنا مساعدك الصيدلاني. أنا شغال على Ollama على جهازك مباشرة — بياناتك خاصة ومأمونة.<br><br>
+              أقدر أساعدك في: تداخلات الأدوية، الجرعات، البدائل الدوائية، تحليل المخزون والمبيعات، أي سؤال دوائي.
+            </div>
+            <div class="msg-time">الآن</div>
+          </div>
+          <div class="ai-chips">
+            <div class="ai-chip" onclick="sendAI('ما تداخلات الوارفارين مع الأسبرين؟')">تداخلات وارفارين + أسبرين</div>
+            <div class="ai-chip" onclick="sendAI('ما بديل الأموكسيسيلين للحساسية من البنسلين؟')">بديل أموكسيسيلين</div>
+            <div class="ai-chip" onclick="sendAI('جرعة الباراسيتامول للأطفال؟')">جرعة أطفال</div>
+            <div class="ai-chip" onclick="sendAI('ما تداخلات الميتفورمين؟')">تداخلات ميتفورمين</div>
+            <div class="ai-chip" onclick="sendAI('حلل مبيعات الصيدلية وقولي أي الأدوية الأكثر ربحاً')">تحليل المبيعات</div>
+            <div class="ai-chip" onclick="sendAI('ما أدوية الضغط الآمنة للحامل؟')">أدوية ضغط للحامل</div>
+          </div>
+          <div class="typing-indicator" id="typing">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+
+        <div class="ai-input-area">
+          <div class="ai-input-wrap">
+            <input id="ai-q" placeholder="اسأل عن أي دواء، تداخل، جرعة، أو تحليل..." onkeydown="if(event.key==='Enter')sendAI()"/>
+          </div>
+          <button class="ai-send" onclick="sendAI()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const drugs = [
+  {name:'باراسيتامول 500mg', barcode:'6221024003487', qty:5,  buy:12, sell:20, exp:'2027-06-01', status:'warn'},
+  {name:'أموكسيسيلين 500mg', barcode:'6221024007821', qty:4,  buy:35, sell:50, exp:'2026-04-28', status:'danger'},
+  {name:'أوميبرازول 20mg',   barcode:'6221024001234', qty:44, buy:25, sell:40, exp:'2027-12-01', status:'ok'},
+  {name:'فيتامين D3 1000IU', barcode:'6221024009988', qty:8,  buy:55, sell:70, exp:'2028-01-01', status:'warn'},
+  {name:'ميتفورمين 500mg',   barcode:'6221024004455', qty:62, buy:18, sell:30, exp:'2027-09-01', status:'ok'},
+  {name:'أتورفاستاتين 20mg', barcode:'6221024005566', qty:30, buy:45, sell:65, exp:'2027-11-01', status:'ok'},
+  {name:'كيتوكونازول كريم',  barcode:'6221024006677', qty:7,  buy:60, sell:85, exp:'2026-05-15', status:'danger'},
+  {name:'فيتامين C فوار',    barcode:'6221024008899', qty:8,  buy:28, sell:45, exp:'2027-08-01', status:'warn'},
+];
+
+const statusMap = {ok:{label:'جيد',cls:'badge-green'}, warn:{label:'منخفض',cls:'badge-amber'}, danger:{label:'تحذير',cls:'badge-red'}};
+
+function margin(b,s){ return s>b?Math.round((s-b)/s*100)+' %':'خسارة'; }
+
+function renderInv(list){
+  document.getElementById('inv-tbody').innerHTML = list.map(d=>`
+    <tr>
+      <td class="drug-name">${d.name}</td>
+      <td class="barcode-text">${d.barcode}</td>
+      <td>${d.qty}</td>
+      <td>${d.buy} ج</td>
+      <td class="price-green">${d.sell} ج</td>
+      <td><span class="stat-badge ${d.sell>d.buy?'badge-green':'badge-red'}">${margin(d.buy,d.sell)}</span></td>
+      <td style="font-size:12px">${d.exp}</td>
+      <td><span class="stat-badge ${statusMap[d.status].cls}">${statusMap[d.status].label}</span></td>
+      <td><button class="action-btn" onclick="editDrug('${d.name}',${d.buy},${d.sell},'${d.barcode}')">تعديل السعر</button></td>
+    </tr>`).join('');
+}
+renderInv(drugs);
+
+function filterInv(){
+  const q = document.getElementById('inv-search').value.toLowerCase();
+  renderInv(drugs.filter(d => d.name.includes(q) || d.barcode.includes(q)));
+}
+
+function editDrug(name, buy, sell, bc){
+  nav('recv', document.querySelectorAll('.nav-item')[2]);
+  document.getElementById('r-name').value = name;
+  document.getElementById('r-barcode').value = bc;
+  document.getElementById('r-buy').value = buy;
+  document.getElementById('r-sell').value = sell;
+  calcMargin();
+}
+
+let scanIdx = {inv:0, recv:0, pos:0};
+function fakeScan(ctx){
+  const d = drugs[scanIdx[ctx] % drugs.length];
+  scanIdx[ctx]++;
+  if(ctx==='inv'){
+    document.getElementById('inv-search').value = d.barcode;
+    filterInv();
+  } else if(ctx==='recv'){
+    document.getElementById('r-barcode').value = d.barcode;
+    document.getElementById('r-name').value = d.name;
+    document.getElementById('r-buy').value = d.buy;
+    document.getElementById('r-sell').value = d.sell;
+    calcMargin();
+  } else {
+    addToCart(d);
+  }
+}
+
+function calcMargin(){
+  const b = +document.getElementById('r-buy').value;
+  const s = +document.getElementById('r-sell').value;
+  const el = document.getElementById('margin-show');
+  if(b && s && s > b){
+    const m = Math.round((s-b)/s*100);
+    el.textContent = m + ' %';
+    el.style.color = m > 20 ? 'var(--green)' : 'var(--amber)';
+  } else if(b && s && s <= b){
+    el.textContent = 'خسارة!';
+    el.style.color = 'var(--red)';
+  } else {
+    el.textContent = '—';
+    el.style.color = 'var(--text3)';
+  }
+}
+
+function saveRecv(){
+  const name = document.getElementById('r-name').value;
+  if(!name){ alert('أدخل اسم الدواء'); return; }
+  const ok = document.getElementById('recv-ok');
+  ok.style.display = 'block';
+  setTimeout(()=>ok.style.display='none', 3000);
+}
+
+let cart = [];
+function addToCart(drug){
+  const d = drug || drugs[Math.floor(Math.random()*drugs.length)];
+  const ex = cart.find(c=>c.barcode===d.barcode);
+  if(ex){ ex.qty++; } else { cart.push({...d, qty:1}); }
+  renderCart();
+}
+function changeQty(i, delta){
+  cart[i].qty += delta;
+  if(cart[i].qty <= 0) cart.splice(i,1);
+  renderCart();
+}
+function renderCart(){
+  const list = document.getElementById('cart-list');
+  const empty = document.getElementById('cart-empty');
+  if(!cart.length){ list.innerHTML=''; empty.style.display='block'; updateTotal(); return; }
+  empty.style.display = 'none';
+  list.innerHTML = cart.map((c,i)=>`
+    <div class="cart-item">
+      <div style="flex:1">
+        <div class="cart-name">${c.name}</div>
+        <div class="cart-price">${c.sell} ج × ${c.qty}</div>
+      </div>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+        <span class="qty-num">${c.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+      </div>
+      <div class="cart-total">${c.sell*c.qty} ج</div>
+    </div>`).join('');
+  updateTotal();
+}
+function updateTotal(){
+  const sub = cart.reduce((s,c)=>s+c.sell*c.qty, 0);
+  const disc = +document.getElementById('discount').value || 0;
+  const total = Math.round(sub * (1 - disc/100));
+  document.getElementById('cart-count').textContent = cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('pos-sub').textContent = sub + ' ج';
+  document.getElementById('pos-total').textContent = total + ' ج';
+}
+function clearCart(){ cart=[]; renderCart(); }
+function checkout(){
+  if(!cart.length){ alert('الفاتورة فارغة!'); return; }
+  const total = Math.round(cart.reduce((s,c)=>s+c.sell*c.qty,0));
+  alert('تم إتمام البيع بنجاح!\nالإجمالي: ' + total + ' ج\n\nسيتم طباعة الفاتورة...');
+  clearCart();
+}
+
+function nav(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .ai-nav-btn').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles = {inv:'لوحة التحكم',pos:'نقطة البيع (POS)',recv:'استلام بضاعة / تعديل سعر',customers:'العملاء والوصفات',alerts:'التنبيهات',reports:'التقارير والإحصائيات',suppliers:'الموردون',ai:'AI مساعد الصيدلي'};
+  document.getElementById('page-title').textContent = titles[id] || id;
+}
+
+document.getElementById('top-date').textContent = new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+const aiKnowledge = {
+  'وارفارين': 'تداخل خطير جداً بين الوارفارين والأسبرين:\n\n• كلاهما يؤثران على تخثر الدم بآليات مختلفة\n• الاستخدام المتزامن يزيد خطر النزيف بشكل كبير جداً\n• يستلزم مراقبة INR بشكل منتظم كل أسبوع\n• الجرعة الآمنة للأسبرين عند الضرورة: 75-100mg فقط\n• الأفضل: استشارة الطبيب واستخدام بديل مثل البانادول للألم',
+  'أموكسيسيلين': 'بدائل الأموكسيسيلين عند الحساسية من البنسلين:\n\n• كلاريثروميسين 500mg — للعدوى التنفسية\n• أزيثروميسين 500mg × 3 أيام\n• دوكسيسيكلين 100mg للبالغين\n• ليفوفلوكساسين 500mg للعدوى الحادة\n\nتنبيه: 5-10% من المرضى الحساسين للبنسلين قد يتحساسون من السيفالوسبورينات أيضاً.',
+  'جرعة': 'جرعة الباراسيتامول للأطفال:\n\n• الجرعة: 10-15 mg/kg كل 4-6 ساعات\n• مثال: طفل 10kg → 100-150mg\n• طفل 20kg → 200-300mg\n• الحد الأقصى: 4 جرعات يومياً (5 في الضرورة)\n• لا تعطيه لأطفال أقل من 3 شهور بدون طبيب\n• الجرعة الكلية لا تتجاوز 75mg/kg/يوم',
+  'ميتفورمين': 'تداخلات الميتفورمين المهمة:\n\n• الكحول: يزيد خطر الحماض اللبني — ممنوع\n• صبغة التصوير بالأشعة: وقف الميتفورمين 48 ساعة قبل وبعد\n• كيتوكونازول: يرفع مستوى الميتفورمين في الدم\n• فيروسيميد وسيميتيدين: تزيد تركيزه\n• المضادات الحيوية الكينولونية: تزيد تأثير تخفيض السكر',
+  'مبيعات': 'تحليل مبيعات الصيدلية:\n\n📊 أعلى ربحية: باراسيتامول (هامش 30%) + أوميبرازول (30%)\n📦 أعلى كمية مباعة: باراسيتامول (340 علبة/شهر)\n⚠️ أدوية تحتاج اهتمام: فيتامين D3 (هامش 20% فقط)\n\n✅ توصيات:\n• زيادة مخزون الباراسيتامول فوراً (5 علب متبقية!)\n• مراجعة سعر بيع فيتامين D3 لرفع الهامش\n• أموكسيسيلين: مخزون منخفض + صلاحية قريبة — اتخذ قرار سريع',
+  'ضغط': 'أدوية ضغط الدم الآمنة للحامل:\n\n✅ آمنة:\n• ميثيل دوبا (Methyldopa) — الأول\n• لابيتالول (Labetalol) — بديل ممتاز\n• نيفيديبين SR (Nifedipine) — للحالات الشديدة\n• هيدرالازين IV — للأزمات الحادة\n\n❌ ممنوعة تماماً:\n• ACE inhibitors (كابتوبريل، ليزينوبريل)\n• ARBs (لوزارتان، فالسارتان)\n• مدرات البول في الحمل الطبيعي',
+};
+
+function now(){ return new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}); }
+
+async function sendAI(preset){
+  const input = document.getElementById('ai-q');
+  const q = preset || input.value.trim();
+  if(!q) return;
+  input.value = '';
+
+  const msgs = document.getElementById('ai-msgs');
+  msgs.innerHTML += `<div class="msg msg-user"><div class="msg-bubble">${q}</div><div class="msg-time">${now()}</div></div>`;
+
+  const typing = document.getElementById('typing');
+  typing.classList.add('show');
+  msgs.scrollTop = msgs.scrollHeight;
+
+  await new Promise(r => setTimeout(r, 900 + Math.random()*700));
+  typing.classList.remove('show');
+
+  let reply;
+  try {
+    const res = await fetch('http://localhost:11434/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'llama3.2',
+        stream: false,
+        messages: [
+          {role:'system', content:'أنت مساعد صيدلاني خبير تتحدث العربية. أجب بشكل واضح ومختصر ومفيد. لا تكن طويلاً جداً.'},
+          {role:'user', content: q}
+        ]
+      })
+    });
+    if(res.ok){
+      const data = await res.json();
+      reply = data.message?.content || 'لم أتمكن من الحصول على إجابة.';
+    } else { throw new Error(); }
+  } catch(_) {
+    const key = Object.keys(aiKnowledge).find(k => q.includes(k));
+    reply = key ? aiKnowledge[key]
+      : 'لم يتم العثور على Ollama على جهازك.\n\nلتشغيل الـ AI:\n1. نزّل Ollama من ollama.com\n2. افتح CMD واكتب: ollama pull llama3.2\n3. أعد تشغيل السيستم\n\nفي الوقت الحالي أنا أعمل بمعلوماتي الأساسية. اسألني عن: وارفارين، أموكسيسيلين، جرعة أطفال، ميتفورمين، مبيعات، ضغط الحامل.';
+  }
+
+  msgs.innerHTML += `<div class="msg msg-bot"><div class="msg-bubble" style="white-space:pre-line">${reply}</div><div class="msg-time">${now()}</div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+</script>
+</body>
+</html>
