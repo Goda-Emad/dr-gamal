@@ -3,710 +3,727 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>صيدلية دكتور جمال الشرقاوي — سيستم إدارة متكامل</title>
+<title>نظام مخزن زلطه الذكي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
-
 :root {
-  --bg:       #0b0f1a;
-  --bg2:      #111827;
-  --bg3:      #1a2236;
-  --bg4:      #212d42;
-  --border:   rgba(255,255,255,0.07);
-  --border2:  rgba(255,255,255,0.13);
-  --text:     #e8edf5;
-  --text2:    #8a93aa;
-  --text3:    #4a5370;
-  --accent:   #2dd4bf;
-  --accent2:  #14b8a6;
-  --accent-bg:rgba(45,212,191,0.08);
-  --accent-br:rgba(45,212,191,0.22);
-  --red:      #f87171;
-  --red-bg:   rgba(248,113,113,0.1);
-  --amber:    #fbbf24;
-  --amber-bg: rgba(251,191,36,0.1);
-  --blue:     #60a5fa;
-  --blue-bg:  rgba(96,165,250,0.1);
-  --purple:   #c084fc;
-  --purple-bg:rgba(192,132,252,0.1);
-  --green:    #4ade80;
-  --green-bg: rgba(74,222,128,0.09);
-  --r:10px; --rl:14px;
+  --green:#00c896;--green-dark:#009e78;
+  --blue:#0a1628;--blue-mid:#0d2040;--blue-light:#1a3a5c;
+  --accent:#00e5b0;--gold:#f5c842;--red:#ff4d6d;
+  --orange:#ff8c42;--purple:#a78bfa;
+  --white:#f0f8ff;--gray:#8aa0b8;--gray2:#4a6080;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;font-size:14px}
-
-/* ─── Sidebar ─── */
-.sb{width:230px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100vh;overflow-y:auto}
-.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
-.sb-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:2px}
-.sb-icon{width:40px;height:40px;background:var(--accent-bg);border:1px solid var(--accent-br);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sb-icon svg{width:20px;height:20px;stroke:var(--accent)}
-.sb-name{font-size:13px;font-weight:800;color:var(--text);line-height:1.3}
-.sb-sub{font-size:10px;color:var(--text3);margin-top:3px}
-.sb-version{display:inline-block;font-size:9px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-br);border-radius:10px;padding:1px 7px;margin-top:4px;font-weight:600}
-
-.nav-sec{font-size:10px;color:var(--text3);letter-spacing:.07em;padding:14px 14px 5px;font-weight:600}
-.ni{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:12.5px;font-weight:500;transition:all .15s;margin:1px 8px;border:1px solid transparent;position:relative}
-.ni:hover{background:var(--bg3);color:var(--text)}
-.ni.active{background:var(--accent-bg);border-color:var(--accent-br);color:var(--accent)}
-.ni svg{width:15px;height:15px;flex-shrink:0}
-.ni-badge{margin-right:auto;background:var(--red);color:#fff;font-size:9px;border-radius:8px;padding:1px 6px;font-weight:700}
-
-.ai-btn{margin:auto 10px 14px;padding:11px 13px;background:linear-gradient(135deg,rgba(192,132,252,.12),rgba(45,212,191,.08));border:1px solid rgba(192,132,252,.28);border-radius:10px;cursor:pointer;color:var(--purple);font-size:12px;font-weight:700;font-family:'Cairo',sans-serif;display:flex;align-items:center;gap:8px;transition:all .2s}
-.ai-btn:hover{border-color:var(--purple);background:rgba(192,132,252,.15)}
-.ai-btn svg{width:15px;height:15px;flex-shrink:0}
-.ai-pulse{width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:auto;animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
-
-/* ─── Main ─── */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{padding:11px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:var(--bg2)}
-.pg-title{font-size:15px;font-weight:800;flex:1}
-.bc-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-br);border-radius:20px;padding:4px 11px}
-.bc-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.4s infinite}
-.top-date{font-size:11px;color:var(--text3)}
-
-.content{flex:1;overflow:hidden}
-.panel{display:none;height:100%;overflow-y:auto;flex-direction:column}
-.panel.active{display:flex}
-
-/* ─── Cards ─── */
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px 18px}
-.sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px 15px;transition:border-color .2s}
-.sc:hover{border-color:var(--border2)}
-.sc-lbl{font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600}
-.sc-val{font-size:21px;font-weight:800}
-.badge{display:inline-flex;align-items:center;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;margin-top:5px}
-.b-green{background:var(--green-bg);color:var(--green)}
-.b-red{background:var(--red-bg);color:var(--red)}
-.b-amber{background:var(--amber-bg);color:var(--amber)}
-.b-blue{background:var(--blue-bg);color:var(--blue)}
-.b-purple{background:var(--purple-bg);color:var(--purple)}
-.b-accent{background:var(--accent-bg);color:var(--accent)}
-
-/* ─── Toolbar / Search ─── */
-.tb{display:flex;align-items:center;gap:8px;padding:0 18px 10px}
-.srch{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:0 11px}
-.srch svg{width:13px;height:13px;stroke:var(--text3);flex-shrink:0}
-.srch input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:13px;font-family:'Cairo',sans-serif;padding:8px 0}
-.srch input::placeholder{color:var(--text3)}
-.btn{padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Cairo',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
-.btn:hover{background:var(--bg3)}
-.btn svg{width:13px;height:13px}
-.btn-acc{background:var(--accent);border-color:var(--accent);color:#0b1a18}
-.btn-acc:hover{background:var(--accent2);border-color:var(--accent2)}
-.btn-red{background:var(--red-bg);border-color:var(--red);color:var(--red)}
-
-/* ─── Table ─── */
-.tw{flex:1;overflow-y:auto;padding:0 18px 16px}
-table{width:100%;border-collapse:collapse}
-thead th{text-align:right;padding:7px 9px;font-size:10.5px;font-weight:700;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap;letter-spacing:.04em}
-tbody td{padding:9px 9px;font-size:12.5px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
-tbody tr:hover td{background:var(--bg3);color:var(--text)}
-.dn{font-weight:700;color:var(--text)}
-.bc{font-family:monospace;font-size:11px;color:var(--text3);letter-spacing:.04em}
-.pg{color:var(--accent);font-weight:700}
-.abt{background:none;border:1px solid var(--border2);border-radius:6px;padding:4px 9px;color:var(--text2);font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .15s}
-.abt:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
-
-/* ─── POS ─── */
-.pos-wrap{display:grid;grid-template-columns:1fr 290px;flex:1;overflow:hidden}
-.pos-l{padding:14px 18px;overflow-y:auto;border-left:1px solid var(--border)}
-.pos-r{display:flex;flex-direction:column;padding:14px;gap:9px;overflow-y:auto;background:var(--bg2)}
-.scan-box{border:2px dashed var(--accent-br);border-radius:12px;padding:18px 14px;text-align:center;cursor:pointer;background:var(--accent-bg);margin-bottom:12px;transition:all .2s}
-.scan-box:hover{border-color:var(--accent)}
-.scan-box svg{width:30px;height:30px;stroke:var(--accent);margin-bottom:6px}
-.scan-box p{font-size:12px;color:var(--accent);font-weight:700}
-.scan-box span{font-size:11px;color:var(--text3)}
-.ci{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:7px}
-.ci-name{font-size:12.5px;font-weight:700;color:var(--text);flex:1}
-.ci-pr{font-size:11px;color:var(--text3)}
-.qc{display:flex;align-items:center;gap:5px}
-.qb{width:23px;height:23px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.qb:hover{border-color:var(--accent);color:var(--accent)}
-.qn{font-size:13px;font-weight:800;min-width:20px;text-align:center;color:var(--text)}
-.ct{font-size:13px;font-weight:800;color:var(--accent);min-width:52px;text-align:left}
-.sum-card{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:13px}
-.sum-title{font-size:13px;font-weight:800;margin-bottom:11px}
-.sum-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text2);padding:3px 0}
-.sum-total{display:flex;justify-content:space-between;font-size:17px;font-weight:800;padding:10px 0 0;border-top:1px solid var(--border);margin-top:7px}
-.sum-total span:last-child{color:var(--accent)}
-
-/* ─── Form ─── */
-.fw{padding:14px 18px;overflow-y:auto}
-.fc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px;max-width:650px}
-.ft{font-size:15px;font-weight:800;margin-bottom:3px}
-.fs{font-size:12px;color:var(--text3);margin-bottom:15px}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-.frow{display:flex;flex-direction:column;gap:4px}
-.frow.full{grid-column:1/-1}
-.flbl{font-size:10.5px;color:var(--text3);font-weight:700;letter-spacing:.04em}
-.finp{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;color:var(--text);font-size:12.5px;font-family:'Cairo',sans-serif;outline:none;transition:border-color .15s;width:100%}
-.finp:focus{border-color:var(--accent)}
-.finp::placeholder{color:var(--text3)}
-.price-box{background:var(--bg3);border:1px solid var(--accent-br);border-radius:10px;padding:13px;margin:2px 0}
-.price-box-title{font-size:11.5px;font-weight:700;color:var(--accent);margin-bottom:9px;display:flex;align-items:center;gap:5px}
-.price-box-title svg{width:13px;height:13px;stroke:var(--accent)}
-.mdisp{display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:8px;padding:9px;font-size:16px;font-weight:800;color:var(--accent);border:1px solid var(--border)}
-.sir{display:flex;gap:5px}
-.sir .finp{flex:1}
-.fa{display:flex;gap:8px;margin-top:14px}
-.fa .btn{flex:1;justify-content:center;padding:10px}
-.ok-msg{display:none;margin-top:11px;padding:10px 13px;background:var(--green-bg);border:1px solid rgba(74,222,128,.25);border-radius:8px;font-size:12.5px;color:var(--green);font-weight:700}
-
-/* ─── Alerts ─── */
-.aw{padding:14px 18px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
-.ac{display:flex;align-items:center;gap:13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:13px 15px}
-.ai-ic{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ai-ic svg{width:18px;height:18px}
-.ab{flex:1}
-.at{font-size:12.5px;font-weight:700;color:var(--text)}
-.as{font-size:11.5px;color:var(--text3);margin-top:2px}
-.am{text-align:left}
-.av{font-size:19px;font-weight:800}
-.al{font-size:10px;color:var(--text3)}
-
-/* ─── Reports ─── */
-.rw{padding:14px 18px;overflow-y:auto}
-.bar-row{display:flex;align-items:center;gap:9px;margin-bottom:9px}
-.bar-lbl{font-size:12px;color:var(--text2);min-width:130px;text-align:right}
-.bar-track{flex:1;height:7px;background:var(--bg3);border-radius:4px;overflow:hidden}
-.bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-.bar-val{font-size:12px;color:var(--text2);min-width:60px;text-align:left}
-
-/* ─── AI ─── */
-.ai-wrap{display:flex;flex-direction:column;height:100%}
-.ai-hd{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px;background:var(--bg2)}
-.ai-av{width:38px;height:38px;border-radius:10px;background:var(--purple-bg);border:1px solid rgba(192,132,252,.28);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ai-av svg{width:19px;height:19px;stroke:var(--purple)}
-.ai-inf strong{font-size:13.5px;color:var(--text);display:block}
-.ai-inf span{font-size:10.5px;color:var(--accent)}
-.ol-badge{font-size:10px;background:var(--bg3);border:1px solid var(--border2);padding:4px 10px;border-radius:20px;color:var(--text3)}
-
-.ai-msgs{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:11px}
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:2px}
-.chip{font-size:11px;padding:5px 11px;border:1px solid var(--border2);border-radius:20px;cursor:pointer;color:var(--text2);background:var(--bg2);font-family:'Cairo',sans-serif;transition:all .15s}
-.chip:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-bg)}
-
-.msg{max-width:82%}
-.mb{padding:10px 13px;border-radius:11px;font-size:13px;line-height:1.7;white-space:pre-line}
-.msg-bot{align-self:flex-start}
-.msg-bot .mb{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:3px 11px 11px 11px}
-.msg-user{align-self:flex-end}
-.msg-user .mb{background:var(--purple-bg);border:1px solid rgba(192,132,252,.2);color:var(--text);border-radius:11px 3px 11px 11px}
-.mt{font-size:10px;color:var(--text3);margin-top:4px}
-.msg-user .mt{text-align:left}
-
-.typing{display:none;align-self:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:3px 11px 11px 11px;padding:11px 15px;gap:4px;align-items:center}
-.typing.on{display:flex}
-.td{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:t .8s infinite}
-.td:nth-child(2){animation-delay:.15s}
-.td:nth-child(3){animation-delay:.3s}
-@keyframes t{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
-
-.ai-inp{padding:13px 18px;border-top:1px solid var(--border);background:var(--bg2);display:flex;gap:7px;align-items:center}
-.ai-inp-box{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;padding:0 11px;gap:7px}
-.ai-inp-box:focus-within{border-color:var(--purple)}
-.ai-inp-box input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:13px;font-family:'Cairo',sans-serif;padding:9px 0}
-.ai-inp-box input::placeholder{color:var(--text3)}
-.send-btn{width:38px;height:38px;border-radius:8px;background:var(--purple);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s}
-.send-btn:hover{opacity:.82}
-.send-btn svg{width:15px;height:15px;stroke:#fff}
-
-/* Avatar */
-.av-c{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
-
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Cairo',sans-serif;background:var(--blue);color:var(--white);overflow-x:hidden;}
+.navbar{position:fixed;top:0;right:0;left:0;z-index:1000;background:rgba(10,22,40,0.97);border-bottom:1px solid rgba(0,200,150,0.2);backdrop-filter:blur(10px);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:62px;}
+.nav-brand{font-size:1rem;font-weight:900;color:var(--accent);display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.nav-links{display:flex;gap:2px;overflow-x:auto;padding:4px 0;}
+.nav-links::-webkit-scrollbar{height:0;}
+.nav-btn{padding:7px 11px;border-radius:8px;border:none;cursor:pointer;font-family:'Cairo',sans-serif;font-size:0.78rem;font-weight:600;background:transparent;color:var(--gray);transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.nav-btn:hover{background:rgba(0,200,150,0.1);color:var(--accent);}
+.nav-btn.active{background:rgba(0,200,150,0.15);color:var(--accent);border:1px solid rgba(0,200,150,0.3);}
+.alert-dot{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.page{display:none;padding-top:62px;min-height:100vh;}
+.page.active{display:block;}
+/* HERO */
+.hero{min-height:calc(100vh - 62px);background:linear-gradient(135deg,#0a1628 0%,#0d2a1e 50%,#0a1628 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,200,150,0.07) 0%,transparent 70%);top:-80px;left:-80px;animation:pulse 5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.badge{background:rgba(0,200,150,0.15);border:1px solid var(--green);color:var(--accent);padding:5px 18px;border-radius:50px;font-size:12px;font-weight:600;margin-bottom:20px;display:inline-block;}
+.hero h1{font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.15;margin-bottom:14px;}
+.hero h1 span{color:var(--accent);}
+.hero p{font-size:0.95rem;color:var(--gray);max-width:500px;line-height:1.8;margin-bottom:40px;}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;}
+.stat-num{font-size:1.8rem;font-weight:900;color:var(--accent);display:block;}
+.stat-label{font-size:0.78rem;color:var(--gray);}
+.quick-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;max-width:860px;width:100%;}
+.quick-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(0,200,150,0.2);border-radius:14px;padding:18px 12px;cursor:pointer;transition:all 0.3s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;font-family:'Cairo',sans-serif;color:var(--white);}
+.quick-btn:hover{border-color:var(--green);background:rgba(0,200,150,0.1);transform:translateY(-3px);}
+.quick-btn .icon{font-size:1.8rem;}
+.quick-btn .label{font-size:0.8rem;font-weight:600;}
+/* PAGE HEADER */
+.page-header{background:var(--blue-mid);padding:28px 28px 0;border-bottom:1px solid rgba(0,200,150,0.15);}
+.page-header h2{font-size:1.5rem;font-weight:900;margin-bottom:4px;}
+.page-header h2 span{color:var(--accent);}
+.page-header p{color:var(--gray);font-size:0.87rem;padding-bottom:20px;}
+.content{padding:24px 28px;max-width:1400px;}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:14px;}
+.stat-card .s-icon{font-size:1.8rem;}
+.stat-card .s-val{font-size:1.5rem;font-weight:900;}
+.stat-card .s-lbl{font-size:0.75rem;color:var(--gray);}
+.stat-card.green{border-color:rgba(0,200,150,0.3);}.stat-card.green .s-val{color:var(--accent);}
+.stat-card.red{border-color:rgba(255,77,109,0.3);}.stat-card.red .s-val{color:var(--red);}
+.stat-card.gold{border-color:rgba(245,200,66,0.3);}.stat-card.gold .s-val{color:var(--gold);}
+.stat-card.purple{border-color:rgba(167,139,250,0.3);}.stat-card.purple .s-val{color:var(--purple);}
+/* TABLE */
+.table-wrap{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden;margin-bottom:20px;}
+.table-top{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.table-top h3{font-size:0.95rem;font-weight:700;}
+.search-input{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:7px 13px;color:var(--white);font-family:'Cairo',sans-serif;font-size:0.82rem;width:200px;}
+.search-input:focus{outline:none;border-color:var(--green);}
+.search-input::placeholder{color:var(--gray2);}
+table{width:100%;border-collapse:collapse;font-size:0.83rem;}
+th{background:rgba(0,200,150,0.08);color:var(--accent);padding:11px 14px;text-align:right;font-weight:700;font-size:0.77rem;}
+td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--white);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.tag{padding:3px 9px;border-radius:50px;font-size:0.72rem;font-weight:600;display:inline-block;}
+.tag.green{background:rgba(0,200,150,0.15);color:var(--accent);}
+.tag.red{background:rgba(255,77,109,0.15);color:var(--red);}
+.tag.gold{background:rgba(245,200,66,0.15);color:var(--gold);}
+.tag.orange{background:rgba(255,140,66,0.15);color:var(--orange);}
+.tag.purple{background:rgba(167,139,250,0.15);color:var(--purple);}
+/* BUTTONS */
+.btn{padding:8px 18px;border-radius:9px;border:none;cursor:pointer;font-family:'Cairo',sans-serif;font-size:0.83rem;font-weight:700;transition:all 0.2s;}
+.btn-primary{background:var(--green);color:var(--blue);}
+.btn-primary:hover{background:var(--green-dark);}
+.btn-outline{background:transparent;border:1px solid var(--green);color:var(--accent);}
+.btn-outline:hover{background:rgba(0,200,150,0.1);}
+.btn-red{background:rgba(255,77,109,0.15);color:var(--red);border:1px solid rgba(255,77,109,0.3);}
+.btn-sm{padding:5px 11px;font-size:0.75rem;}
+/* INVOICE */
+.invoice-layout{display:grid;grid-template-columns:1fr 360px;gap:20px;}
+.invoice-form{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-size:0.77rem;color:var(--gray);font-weight:600;}
+.form-control{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:9px 13px;color:var(--white);font-family:'Cairo',sans-serif;font-size:0.86rem;}
+.form-control:focus{outline:none;border-color:var(--green);}
+.form-control::placeholder{color:var(--gray2);}
+select.form-control option{background:var(--blue-mid);}
+.inv-tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:0.8rem;}
+.inv-tbl th{background:var(--blue-light);color:var(--gray);padding:9px 11px;text-align:right;font-size:0.75rem;}
+.inv-tbl td{padding:7px 11px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.inv-tbl input{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:4px 7px;color:var(--white);font-family:'Cairo',sans-serif;font-size:0.8rem;width:100%;}
+.invoice-summary{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px;height:fit-content;}
+.sum-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.88rem;}
+.sum-row.total{border:none;padding-top:14px;}
+.sum-row.total span{font-size:1.2rem;font-weight:900;color:var(--accent);}
+.client-box{background:rgba(0,200,150,0.05);border:1px solid rgba(0,200,150,0.2);border-radius:11px;padding:14px;margin-bottom:14px;}
+/* ALERTS */
+.alerts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-bottom:24px;}
+.alert-card{border-radius:14px;padding:18px 22px;border:1px solid;}
+.alert-card.danger{background:rgba(255,77,109,0.07);border-color:rgba(255,77,109,0.3);}
+.alert-card.warning{background:rgba(255,140,66,0.07);border-color:rgba(255,140,66,0.3);}
+.alert-card.info{background:rgba(167,139,250,0.07);border-color:rgba(167,139,250,0.3);}
+.alert-card h4{font-size:0.92rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.alert-card.danger h4{color:var(--red);}
+.alert-card.warning h4{color:var(--orange);}
+.alert-card.info h4{color:var(--purple);}
+.al-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.82rem;}
+.al-item:last-child{border:none;}
+.al-item .n{color:var(--white);font-weight:600;}
+.al-item .d{color:var(--gray);font-size:0.77rem;}
+/* DEBTS */
+.debt-tabs{display:flex;gap:8px;margin-bottom:20px;}
+.debt-tab{padding:9px 22px;border-radius:9px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-family:'Cairo',sans-serif;font-size:0.85rem;font-weight:600;transition:all 0.2s;background:transparent;color:var(--gray);}
+.debt-tab.c-active{background:rgba(255,77,109,0.15);border-color:var(--red);color:var(--red);}
+.debt-tab.s-active{background:rgba(245,200,66,0.15);border-color:var(--gold);color:var(--gold);}
+.debt-panel{display:none;}
+.debt-panel.active{display:block;}
+.debt-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.dsc{background:rgba(255,255,255,0.04);border-radius:12px;padding:18px;text-align:center;border:1px solid rgba(255,255,255,0.08);}
+.dsc .v{font-size:1.5rem;font-weight:900;display:block;margin-bottom:3px;}
+.dsc .l{font-size:0.77rem;color:var(--gray);}
+.dsc.red .v{color:var(--red);}.dsc.gold .v{color:var(--gold);}.dsc.green .v{color:var(--accent);}
+.prog{margin-top:7px;background:rgba(255,255,255,0.08);border-radius:50px;height:5px;overflow:hidden;}
+.prog-bar{height:5px;border-radius:50px;}
+.prog-bar.r{background:var(--red);}.prog-bar.g{background:var(--gold);}
+/* AI CHAT */
+.chat-layout{display:grid;grid-template-columns:1fr 320px;gap:20px;}
+.chat-main{background:rgba(255,255,255,0.03);border:1px solid rgba(0,200,150,0.2);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 190px);}
+.chat-hdr{padding:14px 18px;border-bottom:1px solid rgba(0,200,150,0.15);display:flex;align-items:center;gap:10px;background:rgba(0,200,150,0.05);}
+.ai-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);animation:blink 2s infinite;}
+.chat-msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;}
+.chat-msgs::-webkit-scrollbar{width:3px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:rgba(0,200,150,0.3);border-radius:2px;}
+.msg{display:flex;gap:9px;align-items:flex-start;}
+.msg.user{flex-direction:row-reverse;}
+.msg-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;}
+.msg.user .msg-av{background:rgba(0,200,150,0.2);border:1px solid var(--green);}
+.msg.ai .msg-av{background:rgba(245,200,66,0.2);border:1px solid var(--gold);}
+.msg-bub{max-width:74%;padding:11px 15px;border-radius:13px;font-size:0.86rem;line-height:1.7;}
+.msg.user .msg-bub{background:rgba(0,200,150,0.12);border:1px solid rgba(0,200,150,0.25);border-top-left-radius:3px;}
+.msg.ai .msg-bub{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-top-right-radius:3px;}
+.msg.ai .msg-bub strong{color:var(--accent);}
+.chat-inp-row{padding:14px;border-top:1px solid rgba(0,200,150,0.15);display:flex;gap:9px;}
+.chat-inp{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:9px 14px;color:var(--white);font-family:'Cairo',sans-serif;font-size:0.86rem;}
+.chat-inp:focus{outline:none;border-color:var(--green);}
+.chat-inp::placeholder{color:var(--gray2);}
+.chat-send{background:var(--green);border:none;border-radius:11px;padding:9px 15px;cursor:pointer;font-size:1rem;color:var(--blue);font-weight:900;transition:all 0.2s;}
+.chat-send:hover{background:var(--green-dark);}
+.qq{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px;height:fit-content;}
+.qq h4{font-size:0.85rem;font-weight:700;margin-bottom:12px;color:var(--gray);}
+.qq-btn{width:100%;text-align:right;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:9px;padding:9px 13px;margin-bottom:7px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:0.79rem;color:var(--white);transition:all 0.2s;}
+.qq-btn:hover{border-color:var(--green);background:rgba(0,200,150,0.08);color:var(--accent);}
+/* REPORTS */
+.rpt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;}
+.rpt-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px;transition:all 0.3s;cursor:pointer;}
+.rpt-card:hover{border-color:var(--green);transform:translateY(-3px);}
+.rpt-card .ri{font-size:2.2rem;margin-bottom:10px;display:block;}
+.rpt-card h3{font-size:0.95rem;font-weight:700;margin-bottom:7px;}
+.rpt-card p{font-size:0.82rem;color:var(--gray);line-height:1.6;}
+.bar-chart{margin-top:16px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.bar-row .bl{width:110px;font-size:0.77rem;color:var(--gray);text-align:right;flex-shrink:0;}
+.bar-outer{flex:1;background:rgba(255,255,255,0.06);border-radius:50px;height:9px;overflow:hidden;}
+.bar-inner{height:9px;border-radius:50px;}
+.bar-row .bv{font-size:0.77rem;font-weight:700;width:55px;color:var(--white);}
+/* INV FILTERS */
+.inv-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+.flt-btn{padding:6px 14px;border-radius:7px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--gray);cursor:pointer;font-family:'Cairo',sans-serif;font-size:0.79rem;transition:all 0.2s;}
+.flt-btn:hover,.flt-btn.active{background:rgba(0,200,150,0.1);border-color:var(--green);color:var(--accent);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,150,0.2),transparent);}
+@media(max-width:860px){
+  .invoice-layout,.chat-layout{grid-template-columns:1fr;}
+  .content{padding:16px 14px;}
+  .page-header{padding:20px 14px 0;}
+  .form-row{grid-template-columns:1fr;}
+  .debt-sum{grid-template-columns:1fr;}
+  .nav-brand span{display:none;}
+}
 </style>
 </head>
 <body>
 
-<!-- ══ SIDEBAR ══ -->
-<div class="sb">
-  <div class="sb-logo">
-    <div class="sb-logo-row">
-      <div class="sb-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/>
-        </svg>
-      </div>
-      <div>
-        <div class="sb-name">صيدلية<br>د. جمال الشرقاوي</div>
-      </div>
+<nav class="navbar">
+  <div class="nav-brand">🏥 <span>مخزن زلطه الذكي</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="go('home')">🏠 الرئيسية</button>
+    <button class="nav-btn" onclick="go('sales')">🧾 المبيعات</button>
+    <button class="nav-btn" onclick="go('purchases')">🛒 المشتريات</button>
+    <button class="nav-btn" onclick="go('inventory')">📦 المخزون</button>
+    <button class="nav-btn" onclick="go('clients')">👥 العملاء</button>
+    <button class="nav-btn" onclick="go('debts')">💰 المديونات</button>
+    <button class="nav-btn" onclick="go('alerts')">🔔 التنبيهات <span class="alert-dot"></span></button>
+    <button class="nav-btn" onclick="go('reports')">📊 التقارير</button>
+    <button class="nav-btn" onclick="go('ai')">🤖 المساعد الذكي</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <span class="badge">🏥 نظام الصيدلية الذكي — مخزن زلطه</span>
+    <h1>إدارة صيدليتك<br><span>بذكاء اصطناعي</span></h1>
+    <p>فواتير · مخزون · مشتريات · مديونات · تنبيهات ذكية · مساعد AI بالعربي بدون إنترنت</p>
+    <div class="hero-stats">
+      <div><span class="stat-num">48,295</span><span class="stat-label">فاتورة مبيعات</span></div>
+      <div><span class="stat-num">3,584</span><span class="stat-label">فاتورة مشتريات</span></div>
+      <div><span class="stat-num">100%</span><span class="stat-label">بدون إنترنت</span></div>
+      <div><span class="stat-num">بدون</span><span class="stat-label">اشتراك سنوي</span></div>
     </div>
-    <div class="sb-sub">نظام إدارة متكامل</div>
-    <div class="sb-version">الإصدار 2.0 — 2026</div>
-  </div>
-
-  <div class="nav-sec">الرئيسية</div>
-  <div class="ni active" onclick="goto('inv',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    لوحة التحكم
-  </div>
-  <div class="ni" onclick="goto('pos',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-    نقطة البيع (POS)
-  </div>
-  <div class="ni" onclick="goto('recv',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-    استلام بضاعة
-  </div>
-
-  <div class="nav-sec">الإدارة</div>
-  <div class="ni" onclick="goto('customers',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    العملاء والوصفات
-  </div>
-  <div class="ni" onclick="goto('alerts',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-    التنبيهات
-    <span class="ni-badge">4</span>
-  </div>
-  <div class="ni" onclick="goto('reports',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    التقارير والأرباح
-  </div>
-  <div class="ni" onclick="goto('suppliers',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-    الموردون
-  </div>
-
-  <button class="ai-btn" onclick="goto('ai',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-    AI مساعد الصيدلي
-    <div class="ai-pulse"></div>
-  </button>
+    <div class="quick-nav">
+      <div class="quick-btn" onclick="go('sales')"><span class="icon">🧾</span><span class="label">فاتورة مبيعات</span></div>
+      <div class="quick-btn" onclick="go('purchases')"><span class="icon">🛒</span><span class="label">فاتورة مشتريات</span></div>
+      <div class="quick-btn" onclick="go('inventory')"><span class="icon">📦</span><span class="label">المخزون</span></div>
+      <div class="quick-btn" onclick="go('clients')"><span class="icon">👥</span><span class="label">العملاء</span></div>
+      <div class="quick-btn" onclick="go('debts')"><span class="icon">💰</span><span class="label">المديونات</span></div>
+      <div class="quick-btn" onclick="go('alerts')"><span class="icon">🔔</span><span class="label">التنبيهات</span></div>
+      <div class="quick-btn" onclick="go('reports')"><span class="icon">📊</span><span class="label">التقارير</span></div>
+      <div class="quick-btn" onclick="go('ai')"><span class="icon">🤖</span><span class="label">المساعد الذكي</span></div>
+    </div>
+  </section>
 </div>
 
-<!-- ══ MAIN ══ -->
-<div class="main">
-  <div class="topbar">
-    <span class="pg-title" id="pg-title">لوحة التحكم</span>
-    <div class="bc-status"><div class="bc-dot"></div>جهاز الباركود متصل</div>
-    <span class="top-date" id="top-date"></span>
+<!-- SALES -->
+<div id="page-sales" class="page">
+  <div class="page-header">
+    <h2>🧾 <span>فاتورة مبيعات</span></h2>
+    <p>إنشاء فاتورة بيع جديدة — نفس شكل فاتورة مخزن زلطه الحالية</p>
   </div>
-
   <div class="content">
-
-    <!-- ── DASHBOARD / INVENTORY ── -->
-    <div class="panel active" id="panel-inv">
-      <div class="stats">
-        <div class="sc"><div class="sc-lbl">إجمالي الأصناف</div><div class="sc-val">248</div><span class="badge b-accent">↑ 12 هذا الأسبوع</span></div>
-        <div class="sc"><div class="sc-lbl">منخفض المخزون</div><div class="sc-val" style="color:var(--amber)">12</div><span class="badge b-amber">تحتاج طلب</span></div>
-        <div class="sc"><div class="sc-lbl">تنتهي صلاحيتها</div><div class="sc-val" style="color:var(--red)">4</div><span class="badge b-red">خلال 60 يوم</span></div>
-        <div class="sc"><div class="sc-lbl">قيمة المخزون</div><div class="sc-val" style="font-size:17px">84,200 ج</div><span class="badge b-green">محدّث الآن</span></div>
-      </div>
-      <div class="tb">
-        <div class="srch">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="s-inv" placeholder="ابحث بالاسم أو الباركود..." oninput="filterInv()"/>
+    <div class="stats-row">
+      <div class="stat-card green"><span class="s-icon">💰</span><div><div class="s-val">54,230</div><div class="s-lbl">مبيعات اليوم (جنيه)</div></div></div>
+      <div class="stat-card gold"><span class="s-icon">🧾</span><div><div class="s-val">23</div><div class="s-lbl">فاتورة اليوم</div></div></div>
+      <div class="stat-card purple"><span class="s-icon">👥</span><div><div class="s-val">11</div><div class="s-lbl">عميل اليوم</div></div></div>
+      <div class="stat-card red"><span class="s-icon">🎁</span><div><div class="s-val">3,200</div><div class="s-lbl">إجمالي الخصومات</div></div></div>
+    </div>
+    <div class="invoice-layout">
+      <div class="invoice-form">
+        <h3 style="margin-bottom:18px;color:var(--accent)">📋 بيانات الفاتورة</h3>
+        <div class="form-row">
+          <div class="form-group"><label>اسم العميل / الدكتور</label><input class="form-control" placeholder="د. جمال الشرقاوي صديست" oninput="upClient(this.value)"></div>
+          <div class="form-group"><label>كود العميل</label><input class="form-control" placeholder="2463"></div>
         </div>
-        <button class="btn" onclick="scan('inv')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="3" height="18"/><rect x="9" y="3" width="1.5" height="18"/><rect x="13" y="3" width="2.5" height="18"/><rect x="18" y="3" width="3" height="18"/></svg>
-          مسح باركود
-        </button>
-        <button class="btn btn-acc" onclick="goto('recv',document.querySelectorAll('.ni')[2])">+ إضافة دواء</button>
+        <div class="form-row">
+          <div class="form-group"><label>الموزع</label><input class="form-control" placeholder="شعبان السيد النقلي"></div>
+          <div class="form-group"><label>نوع الفاتورة</label><select class="form-control"><option>فاتورة وفاتورة</option><option>آجل</option><option>نقدي</option></select></div>
+        </div>
+        <div class="client-box" id="cbox" style="display:none">
+          <div style="font-weight:700;margin-bottom:3px" id="cname">د. جمال الشرقاوي</div>
+          <div style="font-size:0.78rem;color:var(--gray)">📞 0100861010 — ميت غمر</div>
+          <div style="font-size:0.82rem;color:var(--red);margin-top:5px">💳 رصيد سابق: 18,935.70 جنيه</div>
+        </div>
+        <table class="inv-tbl">
+          <thead><tr><th>م</th><th>اسم الصنف</th><th>كمية</th><th>سعر</th><th>خصم%</th><th>إجمالي</th><th>صلاحية</th><th></th></tr></thead>
+          <tbody id="sitems">
+            <tr><td>1</td><td><input value="الينجاك ٢٠ كبسولة"></td><td><input value="1" style="width:45px" oninput="cr(this)"></td><td><input value="295" style="width:60px" oninput="cr(this)"></td><td><input value="25" style="width:45px" oninput="cr(this)"></td><td class="rt">221.25</td><td><input value="11/2027" style="width:72px"></td><td><button class="btn btn-red btn-sm" onclick="rmRow(this)">✕</button></td></tr>
+            <tr><td>2</td><td><input value="أنتي فلو أقراص"></td><td><input value="5" style="width:45px" oninput="cr(this)"></td><td><input value="38" style="width:60px" oninput="cr(this)"></td><td><input value="17" style="width:45px" oninput="cr(this)"></td><td class="rt">157.70</td><td><input value="02/2029" style="width:72px"></td><td><button class="btn btn-red btn-sm" onclick="rmRow(this)">✕</button></td></tr>
+            <tr><td>3</td><td><input value="باراموال أقراص"></td><td><input value="3" style="width:45px" oninput="cr(this)"></td><td><input value="38" style="width:60px" oninput="cr(this)"></td><td><input value="39" style="width:45px" oninput="cr(this)"></td><td class="rt">69.54</td><td><input value="01/2028" style="width:72px"></td><td><button class="btn btn-red btn-sm" onclick="rmRow(this)">✕</button></td></tr>
+            <tr><td>4</td><td><input value="ديكسيجلوفوزن ١٠ مجم"></td><td><input value="1" style="width:45px" oninput="cr(this)"></td><td><input value="195" style="width:60px" oninput="cr(this)"></td><td><input value="26" style="width:45px" oninput="cr(this)"></td><td class="rt">144.30</td><td><input value="12/2027" style="width:72px"></td><td><button class="btn btn-red btn-sm" onclick="rmRow(this)">✕</button></td></tr>
+          </tbody>
+        </table>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-outline" onclick="addRow()">+ إضافة صنف</button>
+          <button class="btn btn-primary" onclick="alert('🖨️ جارٍ الطباعة...')">🖨️ طباعة</button>
+        </div>
       </div>
-      <div class="tw">
+      <div class="invoice-summary">
+        <h3 style="margin-bottom:18px;color:var(--accent)">💳 ملخص الفاتورة</h3>
+        <div style="background:rgba(0,200,150,0.05);border:1px solid rgba(0,200,150,0.2);border-radius:11px;padding:13px;margin-bottom:14px">
+          <div style="color:var(--gray);font-size:0.77rem">رقم الفاتورة</div>
+          <div style="font-size:1.3rem;font-weight:900;color:var(--gold)">254,198</div>
+          <div style="color:var(--gray);font-size:0.77rem;margin-top:3px">الجمعة 10/04/2026 — 13:40</div>
+        </div>
+        <div class="sum-row"><span style="color:var(--gray)">عدد الأصناف</span><span>4</span></div>
+        <div class="sum-row"><span style="color:var(--gray)">إجمالي قبل خصم</span><span>660.00</span></div>
+        <div class="sum-row"><span style="color:var(--red)">إجمالي الخصم</span><span style="color:var(--red)">-67.21</span></div>
+        <div class="sum-row total"><span style="color:var(--gray)">صافي الفاتورة</span><span>592.79</span></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.08);margin:14px 0;padding-top:14px">
+          <div class="sum-row"><span style="color:var(--gray)">الرصيد السابق</span><span>18,935.70</span></div>
+          <div class="sum-row"><span style="color:var(--red);font-weight:700">الرصيد الجديد</span><span style="color:var(--red);font-weight:700">19,528.49</span></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;padding:13px;font-size:0.95rem;" onclick="alert('✅ تم حفظ الفاتورة!')">✅ حفظ وإغلاق</button>
+        <button class="btn btn-outline" style="width:100%;padding:13px;margin-top:7px;" onclick="alert('🖨️ جارٍ الطباعة...')">🖨️ طباعة الفاتورة</button>
+      </div>
+    </div>
+    <div class="table-wrap" style="margin-top:20px">
+      <div class="table-top"><h3>آخر الفواتير</h3><input class="search-input" placeholder="🔍 بحث في الفواتير..."></div>
+      <table>
+        <thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>الموزع</th><th>التاريخ</th><th>الإجمالي</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--gold);font-weight:700">#48295</td><td>د. جمال الشرقاوي</td><td>شعبان النقلي</td><td>10/04/2026</td><td style="color:var(--accent)">1,827.23</td><td><span class="tag green">مدفوع</span></td><td><button class="btn btn-outline btn-sm">عرض</button></td></tr>
+          <tr><td style="color:var(--gold);font-weight:700">#48294</td><td>صيدلية الشفاء</td><td>أحمد حسن</td><td>10/04/2026</td><td style="color:var(--accent)">3,450.00</td><td><span class="tag gold">آجل</span></td><td><button class="btn btn-outline btn-sm">عرض</button></td></tr>
+          <tr><td style="color:var(--gold);font-weight:700">#48293</td><td>د. محمد إبراهيم</td><td>شعبان النقلي</td><td>09/04/2026</td><td style="color:var(--accent)">890.50</td><td><span class="tag green">مدفوع</span></td><td><button class="btn btn-outline btn-sm">عرض</button></td></tr>
+          <tr><td style="color:var(--gold);font-weight:700">#48292</td><td>مخزن الأمل</td><td>أحمد حسن</td><td>09/04/2026</td><td style="color:var(--accent)">6,200.00</td><td><span class="tag red">متأخر</span></td><td><button class="btn btn-outline btn-sm">عرض</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PURCHASES -->
+<div id="page-purchases" class="page">
+  <div class="page-header">
+    <h2>🛒 <span>فاتورة مشتريات</span></h2>
+    <p>تسجيل الشراء من الموردين وتحديث المخزون تلقائياً</p>
+  </div>
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card green"><span class="s-icon">🛒</span><div><div class="s-val">1,827</div><div class="s-lbl">جنيه — آخر فاتورة</div></div></div>
+      <div class="stat-card gold"><span class="s-icon">📅</span><div><div class="s-val">3,584</div><div class="s-lbl">إجمالي فواتير الشراء</div></div></div>
+      <div class="stat-card red"><span class="s-icon">🏭</span><div><div class="s-val">14</div><div class="s-lbl">مورد نشط</div></div></div>
+      <div class="stat-card purple"><span class="s-icon">💸</span><div><div class="s-val">42,800</div><div class="s-lbl">مديونية للموردين</div></div></div>
+    </div>
+    <div class="invoice-layout">
+      <div class="invoice-form">
+        <h3 style="margin-bottom:18px;color:var(--gold)">📋 بيانات فاتورة الشراء</h3>
+        <div class="form-row">
+          <div class="form-group"><label>المورد</label><select class="form-control"><option>شركة الدواء المصرية</option><option>المستورد الطبي</option><option>مستودع الشفاء</option></select></div>
+          <div class="form-group"><label>رقم فاتورة المورد</label><input class="form-control" placeholder="SUP-2026-4521"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>تاريخ الفاتورة</label><input class="form-control" type="date" value="2026-04-10"></div>
+          <div class="form-group"><label>نوع الدفع</label><select class="form-control"><option>آجل</option><option>نقدي</option><option>جزئي</option></select></div>
+        </div>
+        <table class="inv-tbl">
+          <thead><tr><th>م</th><th>اسم الصنف</th><th>كمية</th><th>سعر شراء</th><th>سعر بيع</th><th>صلاحية</th><th>إجمالي</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><input value="EFEMYO EYE DROPS 10ML"></td><td><input value="10" style="width:45px"></td><td><input value="30" style="width:60px"></td><td><input value="44" style="width:60px"></td><td><input value="04/2028" style="width:72px"></td><td>300.00</td><td><button class="btn btn-red btn-sm">✕</button></td></tr>
+            <tr><td>2</td><td><input value="ELONDA 0.5MG 2 TABS"></td><td><input value="5" style="width:45px"></td><td><input value="88" style="width:60px"></td><td><input value="125" style="width:60px"></td><td><input value="04/2028" style="width:72px"></td><td>440.00</td><td><button class="btn btn-red btn-sm">✕</button></td></tr>
+            <tr><td>3</td><td><input value="MUPIRAX 2% OINT.10GM"></td><td><input value="8" style="width:45px"></td><td><input value="36" style="width:60px"></td><td><input value="48" style="width:60px"></td><td><input value="04/2028" style="width:72px"></td><td>288.00</td><td><button class="btn btn-red btn-sm">✕</button></td></tr>
+          </tbody>
+        </table>
+        <button class="btn btn-outline" style="margin-top:10px">+ إضافة صنف</button>
+      </div>
+      <div class="invoice-summary">
+        <h3 style="margin-bottom:18px;color:var(--gold)">🏭 ملخص الشراء</h3>
+        <div style="background:rgba(245,200,66,0.05);border:1px solid rgba(245,200,66,0.2);border-radius:11px;padding:13px;margin-bottom:14px">
+          <div style="color:var(--gray);font-size:0.77rem">المورد</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--gold)">شركة الدواء المصرية</div>
+          <div style="color:var(--red);font-size:0.8rem;margin-top:5px">💳 مديونية حالية: 12,400 جنيه</div>
+        </div>
+        <div class="sum-row"><span style="color:var(--gray)">عدد الأصناف</span><span>3</span></div>
+        <div class="sum-row"><span style="color:var(--gray)">الإجمالي</span><span>1,028.00</span></div>
+        <div class="sum-row total"><span style="color:var(--gray)">الصافي</span><span style="color:var(--gold)">1,028.00</span></div>
+        <button class="btn btn-primary" style="width:100%;padding:13px;background:var(--gold);margin-top:16px" onclick="alert('✅ تم حفظ فاتورة الشراء وتحديث المخزون!')">✅ حفظ وتحديث المخزون</button>
+      </div>
+    </div>
+    <div class="table-wrap" style="margin-top:20px">
+      <div class="table-top"><h3>آخر فواتير الشراء</h3><input class="search-input" placeholder="🔍 بحث..."></div>
+      <table>
+        <thead><tr><th>رقم الفاتورة</th><th>المورد</th><th>التاريخ</th><th>الإجمالي</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--gold)">#3584</td><td>شركة الدواء المصرية</td><td>09/04/2026</td><td style="color:var(--gold)">1,827.23</td><td><span class="tag gold">آجل</span></td><td><button class="btn btn-outline btn-sm">عرض</button></td></tr>
+          <tr><td style="color:var(--gold)">#3583</td><td>المستورد الطبي</td><td>07/04/2026</td><td style="color:var(--gold)">4,200.00</td><td><span class="tag green">مدفوع</span></td><td><button class="btn btn-outline btn-sm">عرض</button></td></tr>
+          <tr><td style="color:var(--gold)">#3582</td><td>مستودع الشفاء</td><td>05/04/2026</td><td style="color:var(--gold)">2,650.50</td><td><span class="tag red">متأخر</span></td><td><button class="btn btn-outline btn-sm">عرض</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- INVENTORY -->
+<div id="page-inventory" class="page">
+  <div class="page-header">
+    <h2>📦 <span>المخزون</span></h2>
+    <p>كميات لحظية لكل دواء مع كود الموقع وتاريخ الصلاحية</p>
+  </div>
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card green"><span class="s-icon">📦</span><div><div class="s-val">1,240</div><div class="s-lbl">صنف في المخزن</div></div></div>
+      <div class="stat-card red"><span class="s-icon">⚠️</span><div><div class="s-val">23</div><div class="s-lbl">صنف ناقص</div></div></div>
+      <div class="stat-card gold"><span class="s-icon">⏰</span><div><div class="s-val">11</div><div class="s-lbl">قارب الانتهاء</div></div></div>
+      <div class="stat-card purple"><span class="s-icon">❌</span><div><div class="s-val">3</div><div class="s-lbl">منتهي الصلاحية</div></div></div>
+    </div>
+    <div class="inv-filters">
+      <button class="flt-btn active">الكل</button>
+      <button class="flt-btn" style="border-color:rgba(255,77,109,0.3);color:var(--red)">⚠️ ناقص</button>
+      <button class="flt-btn" style="border-color:rgba(255,140,66,0.3);color:var(--orange)">⏰ قارب الانتهاء</button>
+      <button class="flt-btn" style="border-color:rgba(255,77,109,0.5);color:var(--red)">❌ منتهي</button>
+    </div>
+    <div class="table-wrap">
+      <div class="table-top"><h3>قائمة المخزون</h3><input class="search-input" placeholder="🔍 ابحث عن دواء..."></div>
+      <table>
+        <thead><tr><th>كود الموقع</th><th>اسم الصنف</th><th>الكمية</th><th>الحد الأدنى</th><th>سعر الشراء</th><th>سعر البيع</th><th>الصلاحية</th><th>الحالة</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag purple">Z02-C2</span></td><td>الينجاك ٢٠ كبسولة</td><td style="font-weight:700">22,439</td><td>50</td><td>221</td><td>295</td><td>11/2027</td><td><span class="tag green">ممتاز</span></td></tr>
+          <tr><td><span class="tag purple">Z04-A6</span></td><td>باراموال أقراص</td><td style="font-weight:700">12,015</td><td>100</td><td>23</td><td>38</td><td>01/2028</td><td><span class="tag green">ممتاز</span></td></tr>
+          <tr><td><span class="tag purple">Z06-B6</span></td><td>موبيراكس ٢% مرهم</td><td style="font-weight:700;color:var(--orange)">8</td><td>20</td><td>36</td><td>48</td><td>08/2027</td><td><span class="tag orange">ناقص</span></td></tr>
+          <tr><td><span class="tag purple">Z16-A4</span></td><td>ديكساميتازون أمبول</td><td style="font-weight:700">2,431</td><td>30</td><td>40</td><td>65</td><td>12/2027</td><td><span class="tag green">ممتاز</span></td></tr>
+          <tr><td><span class="tag purple">Z21-A4</span></td><td>ليفيا بلس ساشيه</td><td style="font-weight:700;color:var(--red)">3</td><td>15</td><td>117</td><td>150</td><td>05/2026</td><td><span class="tag red">ناقص جداً</span></td></tr>
+          <tr><td><span class="tag purple">Z10-A5</span></td><td>إيموكس ٥٠٠ كبسول</td><td style="font-weight:700">2,510</td><td>100</td><td>120</td><td>200</td><td>09/2028</td><td><span class="tag green">ممتاز</span></td></tr>
+          <tr><td><span class="tag purple">Z05-D5</span></td><td>أفيميو نسقط</td><td style="font-weight:700;color:var(--red)">4</td><td>10</td><td>30</td><td>44</td><td>04/2026</td><td><span class="tag red">منتهي قريباً</span></td></tr>
+          <tr><td><span class="tag purple">Z08-D6</span></td><td>سيلينيوم ديلي فيت</td><td style="font-weight:700">562</td><td>50</td><td>87</td><td>120</td><td>03/2027</td><td><span class="tag gold">مقبول</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTS -->
+<div id="page-clients" class="page">
+  <div class="page-header">
+    <h2>👥 <span>العملاء والموردين</span></h2>
+    <p>بيانات كاملة — سجل المشتريات — كشف الحساب</p>
+  </div>
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card green"><span class="s-icon">👥</span><div><div class="s-val">342</div><div class="s-lbl">إجمالي العملاء</div></div></div>
+      <div class="stat-card red"><span class="s-icon">💳</span><div><div class="s-val">87,430</div><div class="s-lbl">مديونيات العملاء</div></div></div>
+      <div class="stat-card gold"><span class="s-icon">🏭</span><div><div class="s-val">14</div><div class="s-lbl">مورد نشط</div></div></div>
+      <div class="stat-card purple"><span class="s-icon">⭐</span><div><div class="s-val">23</div><div class="s-lbl">عميل VIP</div></div></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-top">
+        <h3>قائمة العملاء</h3>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm">+ عميل جديد</button><input class="search-input" placeholder="🔍 بحث..."></div>
+      </div>
+      <table>
+        <thead><tr><th>الكود</th><th>الاسم</th><th>التليفون</th><th>العنوان</th><th>آخر فاتورة</th><th>الرصيد</th><th>الحالة</th><th></th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--gold)">2463</td><td style="font-weight:700">د. جمال الشرقاوي صديست</td><td>0100861010</td><td>ميت غمر</td><td>10/04/2026</td><td style="color:var(--red);font-weight:700">20,762.93</td><td><span class="tag red">مدين</span></td><td><button class="btn btn-outline btn-sm" onclick="go('debts')">كشف حساب</button></td></tr>
+          <tr><td style="color:var(--gold)">1841</td><td style="font-weight:700">صيدلية الشفاء</td><td>0112345678</td><td>المنصورة</td><td>09/04/2026</td><td style="color:var(--red);font-weight:700">8,500.00</td><td><span class="tag orange">مدين</span></td><td><button class="btn btn-outline btn-sm" onclick="go('debts')">كشف حساب</button></td></tr>
+          <tr><td style="color:var(--gold)">2201</td><td style="font-weight:700">مخزن الأمل للأدوية</td><td>0105678901</td><td>ميت غمر</td><td>08/04/2026</td><td style="color:var(--accent);font-weight:700">0.00</td><td><span class="tag green">سوّى ✓</span></td><td><button class="btn btn-outline btn-sm" onclick="go('debts')">كشف حساب</button></td></tr>
+          <tr><td style="color:var(--gold)">1654</td><td style="font-weight:700">د. محمد إبراهيم</td><td>0109876543</td><td>أجا</td><td>07/04/2026</td><td style="color:var(--red);font-weight:700">3,200.00</td><td><span class="tag red">مدين</span></td><td><button class="btn btn-outline btn-sm" onclick="go('debts')">كشف حساب</button></td></tr>
+          <tr><td style="color:var(--gold)">3012</td><td style="font-weight:700">صيدلية النور</td><td>0101234567</td><td>ميت غمر</td><td>06/04/2026</td><td style="color:var(--accent);font-weight:700">0.00</td><td><span class="tag green">سوّى ✓</span></td><td><button class="btn btn-outline btn-sm" onclick="go('debts')">كشف حساب</button></td></tr>
+          <tr><td style="color:var(--gold)">2889</td><td style="font-weight:700">صيدلية الرحمة</td><td>0118765432</td><td>ميت غمر</td><td>05/04/2026</td><td style="color:var(--red);font-weight:700">8,200.00</td><td><span class="tag red">لم يسدد</span></td><td><button class="btn btn-outline btn-sm" onclick="go('debts')">كشف حساب</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- DEBTS -->
+<div id="page-debts" class="page">
+  <div class="page-header">
+    <h2>💰 <span>المديونات</span></h2>
+    <p>متابعة ديون العملاء عليك — وديونك للموردين</p>
+  </div>
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card red"><span class="s-icon">👥</span><div><div class="s-val">87,430</div><div class="s-lbl">ديون العملاء عليك</div></div></div>
+      <div class="stat-card gold"><span class="s-icon">🏭</span><div><div class="s-val">42,800</div><div class="s-lbl">ديونك للموردين</div></div></div>
+      <div class="stat-card green"><span class="s-icon">💹</span><div><div class="s-val">44,630</div><div class="s-lbl">صافي لصالحك</div></div></div>
+      <div class="stat-card purple"><span class="s-icon">⚡</span><div><div class="s-val">8</div><div class="s-lbl">متأخر عن السداد</div></div></div>
+    </div>
+    <div class="debt-tabs">
+      <button class="debt-tab c-active" id="tab-c" onclick="switchTab('c')">👥 ديون العملاء عليك</button>
+      <button class="debt-tab" id="tab-s" onclick="switchTab('s')">🏭 ديونك للموردين</button>
+    </div>
+
+    <div id="panel-c" class="debt-panel active">
+      <div class="debt-sum">
+        <div class="dsc red"><span class="v">87,430</span><span class="l">إجمالي مديونيات العملاء</span><div class="prog"><div class="prog-bar r" style="width:70%"></div></div></div>
+        <div class="dsc gold"><span class="v">32,100</span><span class="l">متأخر عن الموعد</span><div class="prog"><div class="prog-bar g" style="width:37%"></div></div></div>
+        <div class="dsc green"><span class="v">12,400</span><span class="l">تم التحصيل هذا الشهر</span></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-top">
+          <h3>🔴 ديون العملاء عليك</h3>
+          <div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm">📥 Excel</button><input class="search-input" placeholder="🔍 بحث..."></div>
+        </div>
         <table>
-          <thead><tr><th>اسم الدواء</th><th>الباركود</th><th>الكمية</th><th>سعر الشراء</th><th>سعر البيع</th><th>هامش الربح</th><th>الصلاحية</th><th>الحالة</th><th>إجراء</th></tr></thead>
-          <tbody id="inv-body"></tbody>
+          <thead><tr><th>العميل</th><th>التليفون</th><th>آخر فاتورة</th><th>إجمالي الديون</th><th>المسدد</th><th>المتبقي</th><th>الحالة</th><th></th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:700">د. جمال الشرقاوي صديست</td><td>0100861010</td><td>10/04/2026</td><td>25,000.00</td><td style="color:var(--accent)">4,237.07</td><td style="color:var(--red);font-weight:700">20,762.93</td><td><span class="tag red">متأخر 30+ يوم</span></td><td><button class="btn btn-primary btn-sm" onclick="alert('تسجيل دفعة لـ د. جمال...')">تسجيل دفعة</button></td></tr>
+            <tr><td style="font-weight:700">صيدلية الرحمة</td><td>0118765432</td><td>05/04/2026</td><td>8,200.00</td><td style="color:var(--accent)">0.00</td><td style="color:var(--red);font-weight:700">8,200.00</td><td><span class="tag red">لم يسدد</span></td><td><button class="btn btn-primary btn-sm" onclick="alert('تسجيل دفعة...')">تسجيل دفعة</button></td></tr>
+            <tr><td style="font-weight:700">صيدلية الشفاء</td><td>0112345678</td><td>09/04/2026</td><td>10,000.00</td><td style="color:var(--accent)">1,500.00</td><td style="color:var(--red);font-weight:700">8,500.00</td><td><span class="tag orange">جديد</span></td><td><button class="btn btn-primary btn-sm" onclick="alert('تسجيل دفعة...')">تسجيل دفعة</button></td></tr>
+            <tr><td style="font-weight:700">د. محمد إبراهيم</td><td>0109876543</td><td>07/04/2026</td><td>5,000.00</td><td style="color:var(--accent)">1,800.00</td><td style="color:var(--red);font-weight:700">3,200.00</td><td><span class="tag red">متأخر 20 يوم</span></td><td><button class="btn btn-primary btn-sm" onclick="alert('تسجيل دفعة...')">تسجيل دفعة</button></td></tr>
+            <tr><td style="font-weight:700">مخزن الأمل للأدوية</td><td>0105678901</td><td>01/04/2026</td><td>15,000.00</td><td style="color:var(--accent)">15,000.00</td><td style="color:var(--accent);font-weight:700">0.00</td><td><span class="tag green">سوّى ✓</span></td><td><button class="btn btn-outline btn-sm">كشف حساب</button></td></tr>
+          </tbody>
         </table>
       </div>
-    </div>
-
-    <!-- ── POS ── -->
-    <div class="panel" id="panel-pos">
-      <div class="pos-wrap">
-        <div class="pos-l">
-          <div class="scan-box" onclick="scan('pos')">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="3" height="18"/><rect x="9" y="3" width="1.5" height="18"/><rect x="13" y="3" width="2.5" height="18"/><rect x="18" y="3" width="3" height="18"/></svg>
-            <p>اضغط أو امسح الباركود</p><span>لإضافة دواء للفاتورة</span>
-          </div>
-          <div id="cart-list"></div>
-          <div id="cart-empty" style="text-align:center;padding:28px;color:var(--text3);font-size:13px">لا يوجد أصناف بعد</div>
-        </div>
-        <div class="pos-r">
-          <div class="sum-card">
-            <div class="sum-title">تفاصيل الفاتورة</div>
-            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
-              <div class="flbl">العميل (اختياري)</div>
-              <input class="finp" placeholder="ابحث عن عميل..." style="font-size:12px"/>
-              <div class="flbl" style="margin-top:5px">طريقة الدفع</div>
-              <select class="finp" style="font-size:12px"><option>نقدي</option><option>فيزا</option><option>تحويل بنكي</option></select>
-            </div>
-            <div class="sum-row"><span>عدد الأصناف</span><span id="c-count">0</span></div>
-            <div class="sum-row"><span>المجموع</span><span id="c-sub">0 ج</span></div>
-            <div class="sum-row">
-              <span>خصم %</span>
-              <input id="disc" type="number" min="0" max="100" value="0" oninput="recalc()"
-                style="width:44px;background:var(--bg);border:1px solid var(--border2);border-radius:5px;color:var(--text);padding:2px 5px;font-size:11px;text-align:center;font-family:'Cairo',sans-serif"/>
-            </div>
-            <div class="sum-total"><span>الإجمالي</span><span id="c-total">0 ج</span></div>
-          </div>
-          <button class="btn btn-acc" style="justify-content:center;padding:12px;font-size:13px" onclick="checkout()">إتمام البيع — طباعة فاتورة</button>
-          <button class="btn btn-red" style="justify-content:center" onclick="clearCart()">إلغاء الفاتورة</button>
-          <div style="margin-top:auto;font-size:11px;color:var(--text3);text-align:center;padding-top:8px">اضغط + / − لتغيير الكمية</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── RECEIVE ── -->
-    <div class="panel" id="panel-recv">
-      <div class="fw">
-        <div class="fc">
-          <div class="ft">استلام بضاعة / تعديل دواء</div>
-          <div class="fs">امسح الباركود لملء البيانات تلقائياً — يمكنك تعديل السعر في كل مرة تستلم فيها</div>
-          <div class="fg">
-            <div class="frow"><label class="flbl">اسم الدواء</label><input class="finp" id="r-name" placeholder="مثال: باراسيتامول 500mg"/></div>
-            <div class="frow">
-              <label class="flbl">الباركود</label>
-              <div class="sir">
-                <input class="finp" id="r-bc" placeholder="امسح أو اكتب"/>
-                <button class="btn" onclick="scan('recv')" style="padding:8px 10px;flex-shrink:0">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="3" height="18"/><rect x="9" y="3" width="1.5" height="18"/><rect x="13" y="3" width="2.5" height="18"/><rect x="18" y="3" width="3" height="18"/></svg>
-                </button>
-              </div>
-            </div>
-            <div class="frow"><label class="flbl">الكمية المستلمة</label><input class="finp" id="r-qty" type="number" placeholder="0"/></div>
-            <div class="frow"><label class="flbl">وحدة القياس</label><select class="finp" id="r-unit"><option>علبة</option><option>شريط</option><option>زجاجة</option><option>حبة</option><option>أمبول</option></select></div>
-            <div class="frow full">
-              <div class="price-box">
-                <div class="price-box-title">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  تسعير الدواء — يمكن تغييره في كل توريد جديد
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-                  <div class="frow"><label class="flbl">سعر الشراء (ج)</label><input class="finp" id="r-buy" type="number" placeholder="0" oninput="calcM()"/></div>
-                  <div class="frow"><label class="flbl">سعر البيع (ج)</label><input class="finp" id="r-sell" type="number" placeholder="0" oninput="calcM()"/></div>
-                  <div class="frow"><label class="flbl">هامش الربح</label><div class="mdisp" id="m-show">—</div></div>
-                </div>
-              </div>
-            </div>
-            <div class="frow"><label class="flbl">تاريخ انتهاء الصلاحية</label><input class="finp" id="r-exp" type="date"/></div>
-            <div class="frow"><label class="flbl">المورد</label><select class="finp"><option>شركة الدلتا للأدوية</option><option>النيل للأدوية</option><option>الشرق الأوسط</option><option>مورد آخر</option></select></div>
-            <div class="frow"><label class="flbl">الحد الأدنى للتنبيه</label><input class="finp" type="number" placeholder="مثال: 20"/></div>
-            <div class="frow"><label class="flbl">موقع التخزين</label><input class="finp" placeholder="مثال: رف A خانة 3"/></div>
-            <div class="frow full"><label class="flbl">ملاحظات</label><input class="finp" placeholder="أي ملاحظات..."/></div>
-          </div>
-          <div class="fa">
-            <button class="btn btn-acc" onclick="saveRecv()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              حفظ وتحديث المخزون
-            </button>
-            <button class="btn">إلغاء</button>
-          </div>
-          <div class="ok-msg" id="r-ok">تم الحفظ وتحديث المخزون والسعر بنجاح!</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── CUSTOMERS ── -->
-    <div class="panel" id="panel-customers">
-      <div class="tb" style="padding-top:14px">
-        <div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="ابحث بالاسم أو الموبايل..."/></div>
-        <button class="btn btn-acc">+ عميل جديد</button>
-      </div>
-      <div class="tw">
+      <div class="table-wrap" style="margin-top:16px">
+        <div class="table-top"><h3>📋 آخر المدفوعات المستلمة</h3></div>
         <table>
-          <thead><tr><th>العميل</th><th>الموبايل</th><th>الزيارات</th><th>آخر زيارة</th><th>إجمالي المشتريات</th><th>ملاحظات طبية</th><th></th></tr></thead>
+          <thead><tr><th>التاريخ</th><th>العميل</th><th>المبلغ</th><th>طريقة الدفع</th><th>ملاحظة</th></tr></thead>
           <tbody>
-            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av-c" style="background:var(--blue-bg);color:var(--blue)">أح</div><span class="dn">أحمد محمد علي</span></div></td><td>01012345678</td><td>14</td><td>08/04/2026</td><td class="pg">1,240 ج</td><td><span class="badge b-red">حساسية بنسلين</span></td><td><button class="abt">تفاصيل</button></td></tr>
-            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av-c" style="background:var(--purple-bg);color:var(--purple)">فا</div><span class="dn">فاطمة سالم</span></div></td><td>01098765432</td><td>6</td><td>05/04/2026</td><td class="pg">580 ج</td><td><span class="badge b-amber">مريضة ضغط</span></td><td><button class="abt">تفاصيل</button></td></tr>
-            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av-c" style="background:var(--green-bg);color:var(--green)">مح</div><span class="dn">محمد إبراهيم</span></div></td><td>01155443322</td><td>21</td><td>10/04/2026</td><td class="pg">3,100 ج</td><td>—</td><td><button class="abt">تفاصيل</button></td></tr>
-            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av-c" style="background:var(--amber-bg);color:var(--amber)">من</div><span class="dn">منى خالد</span></div></td><td>01067891234</td><td>3</td><td>01/04/2026</td><td class="pg">220 ج</td><td><span class="badge b-purple">حامل</span></td><td><button class="abt">تفاصيل</button></td></tr>
+            <tr><td>10/04/2026</td><td>مخزن الأمل</td><td style="color:var(--accent);font-weight:700">5,000.00</td><td><span class="tag green">كاش</span></td><td>دفع كامل</td></tr>
+            <tr><td>09/04/2026</td><td>صيدلية الشفاء</td><td style="color:var(--accent);font-weight:700">1,500.00</td><td><span class="tag gold">تحويل</span></td><td>دفعة أولى</td></tr>
+            <tr><td>07/04/2026</td><td>د. جمال الشرقاوي</td><td style="color:var(--accent);font-weight:700">2,000.00</td><td><span class="tag green">كاش</span></td><td>—</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ── ALERTS ── -->
-    <div class="panel" id="panel-alerts">
-      <div class="aw">
-        <div class="ac" style="border-color:rgba(248,113,113,.22)">
-          <div class="ai-ic" style="background:var(--red-bg)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-          <div class="ab"><div class="at">أموكسيسيلين 500mg — مخزون خطر</div><div class="as">المتبقي 4 علب فقط · الحد الأدنى 20 علبة · اطلب فوراً</div></div>
-          <div class="am"><div class="av" style="color:var(--red)">4</div><div class="al">علب متبقية</div></div>
-        </div>
-        <div class="ac" style="border-color:rgba(248,113,113,.22)">
-          <div class="ai-ic" style="background:var(--red-bg)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <div class="ab"><div class="at">كيتوكونازول كريم — صلاحية تنتهي قريباً</div><div class="as">تاريخ الانتهاء: 15 مايو 2026 · 7 علب متبقية</div></div>
-          <div class="am"><div class="av" style="color:var(--red)">35</div><div class="al">يوم متبقي</div></div>
-        </div>
-        <div class="ac" style="border-color:rgba(251,191,36,.2)">
-          <div class="ai-ic" style="background:var(--amber-bg)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-          <div class="ab"><div class="at">باراسيتامول 500 — مخزون منخفض</div><div class="as">المتبقي 5 علب · الحد الأدنى 20 علبة</div></div>
-          <div class="am"><div class="av" style="color:var(--amber)">5</div><div class="al">علب متبقية</div></div>
-        </div>
-        <div class="ac" style="border-color:rgba(251,191,36,.2)">
-          <div class="ai-ic" style="background:var(--amber-bg)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-          <div class="ab"><div class="at">فيتامين C فوار — مخزون منخفض</div><div class="as">المتبقي 8 علب · الحد الأدنى 15 علبة</div></div>
-          <div class="am"><div class="av" style="color:var(--amber)">8</div><div class="al">علب متبقية</div></div>
-        </div>
+    <div id="panel-s" class="debt-panel">
+      <div class="debt-sum">
+        <div class="dsc gold"><span class="v">42,800</span><span class="l">إجمالي ديونك للموردين</span><div class="prog"><div class="prog-bar g" style="width:55%"></div></div></div>
+        <div class="dsc red"><span class="v">18,200</span><span class="l">متأخر عن موعد السداد</span></div>
+        <div class="dsc green"><span class="v">9,500</span><span class="l">دفعت هذا الشهر</span></div>
       </div>
-    </div>
-
-    <!-- ── REPORTS ── -->
-    <div class="panel" id="panel-reports">
-      <div class="rw">
-        <div class="stats" style="padding:0 0 14px">
-          <div class="sc"><div class="sc-lbl">مبيعات اليوم</div><div class="sc-val">3,420 ج</div><span class="badge b-green">↑ 12% عن أمس</span></div>
-          <div class="sc"><div class="sc-lbl">مبيعات الشهر</div><div class="sc-val">48,700 ج</div><span class="badge b-blue">أبريل 2026</span></div>
-          <div class="sc"><div class="sc-lbl">صافي الربح</div><div class="sc-val" style="color:var(--green)">11,200 ج</div><span class="badge b-green">هامش 23%</span></div>
-          <div class="sc"><div class="sc-lbl">عدد الفواتير</div><div class="sc-val">287</div><span class="badge b-purple">هذا الشهر</span></div>
-        </div>
-        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:13px">
-          <div style="font-size:13px;font-weight:800;margin-bottom:13px">الأدوية الأكثر مبيعاً</div>
-          <div class="bar-row"><div class="bar-lbl">باراسيتامول 500</div><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div><div class="bar-val">6,800 ج</div></div>
-          <div class="bar-row"><div class="bar-lbl">أموكسيسيلين 500</div><div class="bar-track"><div class="bar-fill" style="width:66%;background:var(--blue)"></div></div><div class="bar-val">9,000 ج</div></div>
-          <div class="bar-row"><div class="bar-lbl">أوميبرازول 20</div><div class="bar-track"><div class="bar-fill" style="width:51%;background:var(--purple)"></div></div><div class="bar-val">4,750 ج</div></div>
-          <div class="bar-row"><div class="bar-lbl">فيتامين D3</div><div class="bar-track"><div class="bar-fill" style="width:42%;background:var(--amber)"></div></div><div class="bar-val">4,200 ج</div></div>
-          <div class="bar-row"><div class="bar-lbl">ميتفورمين 500</div><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--red)"></div></div><div class="bar-val">2,100 ج</div></div>
+      <div class="table-wrap">
+        <div class="table-top">
+          <h3>🟡 ديونك للموردين</h3>
+          <input class="search-input" placeholder="🔍 بحث...">
         </div>
         <table>
-          <thead><tr><th>الدواء</th><th>الكمية المباعة</th><th>إجمالي المبيعات</th><th>الربح</th><th>الهامش</th></tr></thead>
+          <thead><tr><th>المورد</th><th>التليفون</th><th>آخر فاتورة</th><th>إجمالي الديون</th><th>المسدد</th><th>المتبقي</th><th>الحالة</th><th></th></tr></thead>
           <tbody>
-            <tr><td class="dn">باراسيتامول 500</td><td>340</td><td>6,800 ج</td><td class="pg">2,040 ج</td><td><span class="badge b-green">30%</span></td></tr>
-            <tr><td class="dn">أموكسيسيلين 500</td><td>180</td><td>9,000 ج</td><td class="pg">1,800 ج</td><td><span class="badge b-green">20%</span></td></tr>
-            <tr><td class="dn">أوميبرازول 20</td><td>95</td><td>4,750 ج</td><td class="pg">1,425 ج</td><td><span class="badge b-green">30%</span></td></tr>
-            <tr><td class="dn">فيتامين D3</td><td>60</td><td>4,200 ج</td><td class="pg">840 ج</td><td><span class="badge b-amber">20%</span></td></tr>
+            <tr><td style="font-weight:700">شركة الدواء المصرية</td><td>0223456789</td><td>09/04/2026</td><td>20,000.00</td><td style="color:var(--accent)">7,600.00</td><td style="color:var(--gold);font-weight:700">12,400.00</td><td><span class="tag orange">جزئي</span></td><td><button class="btn btn-primary btn-sm" style="background:var(--gold);color:var(--blue)" onclick="alert('تسجيل دفع للمورد...')">تسجيل دفع</button></td></tr>
+            <tr><td style="font-weight:700">المستورد الطبي</td><td>0198765432</td><td>07/04/2026</td><td>15,000.00</td><td style="color:var(--accent)">8,800.00</td><td style="color:var(--gold);font-weight:700">6,200.00</td><td><span class="tag gold">جديد</span></td><td><button class="btn btn-primary btn-sm" style="background:var(--gold);color:var(--blue)" onclick="alert('تسجيل دفع...')">تسجيل دفع</button></td></tr>
+            <tr><td style="font-weight:700">مستودع الشفاء</td><td>0156789012</td><td>05/04/2026</td><td>10,000.00</td><td style="color:var(--accent)">5,800.00</td><td style="color:var(--red);font-weight:700">4,200.00</td><td><span class="tag red">متأخر</span></td><td><button class="btn btn-primary btn-sm" style="background:var(--gold);color:var(--blue)" onclick="alert('تسجيل دفع...')">تسجيل دفع</button></td></tr>
+            <tr><td style="font-weight:700">دلتا فارما</td><td>0134567890</td><td>01/04/2026</td><td>12,000.00</td><td style="color:var(--accent)">12,000.00</td><td style="color:var(--accent);font-weight:700">0.00</td><td><span class="tag green">مسدد ✓</span></td><td><button class="btn btn-outline btn-sm">كشف حساب</button></td></tr>
           </tbody>
         </table>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- ── SUPPLIERS ── -->
-    <div class="panel" id="panel-suppliers">
-      <div class="tb" style="padding-top:14px">
-        <div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="ابحث عن مورد..."/></div>
-        <button class="btn btn-acc">+ مورد جديد</button>
+<!-- ALERTS -->
+<div id="page-alerts" class="page">
+  <div class="page-header">
+    <h2>🔔 <span>التنبيهات الذكية</span></h2>
+    <p>النظام بيراقب مخزونك ومديونياتك تلقائياً ويخبرك فور أي مشكلة</p>
+  </div>
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card red"><span class="s-icon">🚨</span><div><div class="s-val">3</div><div class="s-lbl">تنبيه عاجل</div></div></div>
+      <div class="stat-card gold"><span class="s-icon">⚠️</span><div><div class="s-val">11</div><div class="s-lbl">تنبيه تحذيري</div></div></div>
+      <div class="stat-card purple"><span class="s-icon">ℹ️</span><div><div class="s-val">5</div><div class="s-lbl">تنبيه معلوماتي</div></div></div>
+      <div class="stat-card green"><span class="s-icon">✅</span><div><div class="s-val">8</div><div class="s-lbl">تم الحل اليوم</div></div></div>
+    </div>
+    <div class="alerts-grid">
+      <div class="alert-card danger">
+        <h4>🚨 أدوية منتهية الصلاحية — تصرف فوراً</h4>
+        <div class="al-item"><div><div class="n">أفيميو نسقط</div><div class="d">Z05-D5 — 4 وحدات</div></div><span class="tag red">04/2026 ✗</span></div>
+        <div class="al-item"><div><div class="n">CONTA-FLU TAB</div><div class="d">Z10-A5 — 8 شرائط</div></div><span class="tag red">03/2026 ✗</span></div>
+        <div class="al-item"><div><div class="n">ليفيا بلس ساشيه</div><div class="d">Z21-A4 — 3 وحدات</div></div><span class="tag red">ينتهي 05/2026</span></div>
       </div>
-      <div class="tw">
-        <table>
-          <thead><tr><th>المورد</th><th>الموبايل</th><th>إجمالي المشتريات</th><th>المديونية</th><th>آخر توريد</th><th>الحالة</th></tr></thead>
-          <tbody>
-            <tr><td class="dn">شركة الدلتا للأدوية</td><td>0222345678</td><td>32,000 ج</td><td style="color:var(--red);font-weight:800">5,400 ج</td><td>09/04/2026</td><td><span class="badge b-red">مديون</span></td></tr>
-            <tr><td class="dn">النيل للأدوية</td><td>0223456789</td><td>18,500 ج</td><td class="pg">0 ج</td><td>01/04/2026</td><td><span class="badge b-green">مسدد</span></td></tr>
-            <tr><td class="dn">الشرق الأوسط للمستلزمات</td><td>0224567890</td><td>9,200 ج</td><td class="pg">0 ج</td><td>25/03/2026</td><td><span class="badge b-green">مسدد</span></td></tr>
-          </tbody>
-        </table>
+      <div class="alert-card warning">
+        <h4>⚠️ مخزون منخفض — يحتاج إعادة طلب</h4>
+        <div class="al-item"><div><div class="n">موبيراكس ٢% مرهم</div><div class="d">Z06-B6 — الحد الأدنى: 20</div></div><span class="tag orange">متبقي: 8</span></div>
+        <div class="al-item"><div><div class="n">ليفيا بلس ساشيه</div><div class="d">Z21-A4 — الحد الأدنى: 15</div></div><span class="tag red">متبقي: 3</span></div>
+        <div class="al-item"><div><div class="n">DERMOVATE CREAM 25GM</div><div class="d">Z12-B3 — الحد الأدنى: 10</div></div><span class="tag orange">متبقي: 6</span></div>
+        <div class="al-item"><div><div class="n">FUCICORT TOPICAL CREAM</div><div class="d">Z15-C1 — الحد الأدنى: 12</div></div><span class="tag orange">متبقي: 9</span></div>
+      </div>
+      <div class="alert-card danger">
+        <h4>💳 عملاء متأخرون عن السداد</h4>
+        <div class="al-item"><div><div class="n">د. جمال الشرقاوي</div><div class="d">متأخر أكثر من 30 يوم</div></div><span class="tag red">20,762 جنيه</span></div>
+        <div class="al-item"><div><div class="n">صيدلية الرحمة</div><div class="d">متأخر أكثر من 15 يوم</div></div><span class="tag red">8,200 جنيه</span></div>
+        <div class="al-item"><div><div class="n">د. محمد إبراهيم</div><div class="d">متأخر أكثر من 20 يوم</div></div><span class="tag orange">3,200 جنيه</span></div>
+      </div>
+      <div class="alert-card warning">
+        <h4>🏭 ديون للموردين قاربت الاستحقاق</h4>
+        <div class="al-item"><div><div class="n">مستودع الشفاء</div><div class="d">موعد السداد: 15/04/2026</div></div><span class="tag red">4,200 جنيه</span></div>
+        <div class="al-item"><div><div class="n">شركة الدواء المصرية</div><div class="d">موعد السداد: 20/04/2026</div></div><span class="tag orange">12,400 جنيه</span></div>
+      </div>
+      <div class="alert-card info">
+        <h4>⏰ أدوية ستنتهي خلال 90 يوم</h4>
+        <div class="al-item"><div><div class="n">الوندا ٠.٥ مجم ٢ قرص</div><div class="d">Z06-A6 — كمية: 5</div></div><span class="tag purple">01/2027</span></div>
+        <div class="al-item"><div><div class="n">LIVIA PLUS SACHET</div><div class="d">Z21-A4 — كمية: 2,505</div></div><span class="tag purple">12/2026</span></div>
+        <div class="al-item"><div><div class="n">EPICOTIL 20MG F.C.TAB</div><div class="d">Z10-A4 — كمية: 57</div></div><span class="tag purple">10/2026</span></div>
+        <div class="al-item"><div><div class="n">HERO BABY NUTRADEFENSE</div><div class="d">Z07-C2 — كمية: 12</div></div><span class="tag purple">08/2026</span></div>
+      </div>
+      <div class="alert-card info">
+        <h4>📊 ملاحظات الذكاء الاصطناعي</h4>
+        <div class="al-item"><div><div class="n">باراموال أقراص ↑ 23%</div><div class="d">زيادة في الطلب هذا الأسبوع</div></div><span class="tag green">فرصة</span></div>
+        <div class="al-item"><div><div class="n">DEXA 5AMP ↓ 40%</div><div class="d">انخفاض ملحوظ في المبيعات</div></div><span class="tag orange">راجع</span></div>
+        <div class="al-item"><div><div class="n">إيموكس ٥٠٠ — مبيعات عالية</div><div class="d">سيحتاج إعادة طلب الأسبوع القادم</div></div><span class="tag purple">تنبه</span></div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- ── AI AGENT ── -->
-    <div class="panel" id="panel-ai">
-      <div class="ai-wrap">
-        <div class="ai-hd">
-          <div class="ai-av">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-          </div>
-          <div class="ai-inf" style="flex:1">
-            <strong>مساعد الصيدلي AI</strong>
-            <span>متصل بـ Ollama — يعمل محلياً بدون إنترنت</span>
-          </div>
-          <div style="text-align:center">
-            <div class="ol-badge">llama3.2</div>
-            <div style="font-size:9.5px;color:var(--text3);margin-top:3px">بياناتك لا تغادر الجهاز</div>
+<!-- REPORTS -->
+<div id="page-reports" class="page">
+  <div class="page-header">
+    <h2>📊 <span>التقارير والإحصاءات</span></h2>
+    <p>تحليل شامل للمبيعات والمخزون والأرباح</p>
+  </div>
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card green"><span class="s-icon">💰</span><div><div class="s-val">382,400</div><div class="s-lbl">مبيعات الشهر (جنيه)</div></div></div>
+      <div class="stat-card gold"><span class="s-icon">📈</span><div><div class="s-val">+12%</div><div class="s-lbl">نمو عن الشهر السابق</div></div></div>
+      <div class="stat-card purple"><span class="s-icon">💹</span><div><div class="s-val">94,300</div><div class="s-lbl">إجمالي الأرباح</div></div></div>
+      <div class="stat-card red"><span class="s-icon">🎁</span><div><div class="s-val">28,400</div><div class="s-lbl">إجمالي الخصومات</div></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+      <div class="table-wrap" style="margin:0">
+        <div class="table-top"><h3>🏆 أكثر الأدوية مبيعاً — أبريل 2026</h3></div>
+        <div style="padding:18px">
+          <div class="bar-chart">
+            <div class="bar-row"><span class="bl">باراموال أقراص</span><div class="bar-outer"><div class="bar-inner" style="width:90%;background:var(--accent)"></div></div><span class="bv">2,847</span></div>
+            <div class="bar-row"><span class="bl">إيموكس ٥٠٠</span><div class="bar-outer"><div class="bar-inner" style="width:75%;background:var(--green)"></div></div><span class="bv">2,341</span></div>
+            <div class="bar-row"><span class="bl">DEXA 5AMP</span><div class="bar-outer"><div class="bar-inner" style="width:60%;background:var(--gold)"></div></div><span class="bv">1,890</span></div>
+            <div class="bar-row"><span class="bl">سيلينيوم فيت</span><div class="bar-outer"><div class="bar-inner" style="width:45%;background:var(--purple)"></div></div><span class="bv">1,420</span></div>
+            <div class="bar-row"><span class="bl">الينجاك</span><div class="bar-outer"><div class="bar-inner" style="width:38%;background:var(--orange)"></div></div><span class="bv">1,200</span></div>
           </div>
         </div>
-
-        <div class="ai-msgs" id="ai-msgs">
-          <div class="msg msg-bot">
-            <div class="mb">مرحباً بك في مساعد صيدلية د. جمال الشرقاوي!
-أنا شغال مباشرةً على جهازك بـ Ollama — بياناتك خاصة ومأمونة 100%.
-
-أقدر أساعدك في:
-• تداخلات الأدوية وموانع الاستخدام
-• الجرعات للكبار والأطفال
-• بدائل الأدوية الناقصة
-• أدوية الحامل والمرضع
-• تحليل مبيعات الصيدلية
-
-اسألني أي سؤال!</div>
-            <div class="mt">الآن</div>
+      </div>
+      <div class="table-wrap" style="margin:0">
+        <div class="table-top"><h3>📅 مبيعات آخر 7 أيام</h3></div>
+        <div style="padding:18px">
+          <div class="bar-chart">
+            <div class="bar-row"><span class="bl">الجمعة 10/4</span><div class="bar-outer"><div class="bar-inner" style="width:85%;background:var(--accent)"></div></div><span class="bv">54,230</span></div>
+            <div class="bar-row"><span class="bl">الخميس 9/4</span><div class="bar-outer"><div class="bar-inner" style="width:70%;background:var(--green)"></div></div><span class="bv">44,800</span></div>
+            <div class="bar-row"><span class="bl">الأربعاء 8/4</span><div class="bar-outer"><div class="bar-inner" style="width:55%;background:var(--gold)"></div></div><span class="bv">35,100</span></div>
+            <div class="bar-row"><span class="bl">الثلاثاء 7/4</span><div class="bar-outer"><div class="bar-inner" style="width:65%;background:var(--purple)"></div></div><span class="bv">41,500</span></div>
+            <div class="bar-row"><span class="bl">الاثنين 6/4</span><div class="bar-outer"><div class="bar-inner" style="width:50%;background:var(--orange)"></div></div><span class="bv">31,900</span></div>
           </div>
-          <div class="chips">
-            <div class="chip" onclick="askAI('ما تداخلات الوارفارين مع الأسبرين؟')">وارفارين + أسبرين</div>
-            <div class="chip" onclick="askAI('ما بديل الأموكسيسيلين عند حساسية البنسلين؟')">بديل أموكسيسيلين</div>
-            <div class="chip" onclick="askAI('جرعة الباراسيتامول للأطفال؟')">جرعة أطفال</div>
-            <div class="chip" onclick="askAI('ما أدوية الضغط الآمنة للحامل؟')">أدوية ضغط للحامل</div>
-            <div class="chip" onclick="askAI('ما تداخلات الميتفورمين؟')">تداخلات ميتفورمين</div>
-            <div class="chip" onclick="askAI('حلل مبيعات الصيدلية وإيه أكثر الأدوية ربحاً؟')">تحليل المبيعات</div>
-            <div class="chip" onclick="askAI('ما الفرق بين أوميبرازول وبانتوبرازول؟')">أوميبرازول vs بانتوبرازول</div>
-            <div class="chip" onclick="askAI('ما أعراض جرعة زائدة من الباراسيتامول؟')">جرعة زائدة باراسيتامول</div>
-          </div>
-          <div class="typing" id="typing">
-            <div class="td"></div><div class="td"></div><div class="td"></div>
-          </div>
-        </div>
-
-        <div class="ai-inp">
-          <div class="ai-inp-box">
-            <input id="ai-q" placeholder="اسأل عن أي دواء، تداخل، جرعة، أو تحليل..." onkeydown="if(event.key==='Enter')askAI()"/>
-          </div>
-          <button class="send-btn" onclick="askAI()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </button>
         </div>
       </div>
     </div>
+    <div class="rpt-grid">
+      <div class="rpt-card"><span class="ri">📋</span><h3>تقرير تقفيل اليوم</h3><p>إجمالي المبيعات والمشتريات والمدفوعات ليوم 10/04/2026</p><br><button class="btn btn-primary btn-sm" onclick="alert('📋 جارٍ توليد تقرير اليوم...')">📥 عرض</button></div>
+      <div class="rpt-card"><span class="ri">💳</span><h3>كشف حساب عميل</h3><p>سجل كامل لكل الفواتير والمدفوعات لأي عميل</p><br><button class="btn btn-primary btn-sm" onclick="go('debts')">📥 عرض</button></div>
+      <div class="rpt-card"><span class="ri">📦</span><h3>تقرير المخزون</h3><p>قائمة كاملة بالمخزون الحالي مع التقييم المالي</p><br><button class="btn btn-primary btn-sm" onclick="go('inventory')">📥 عرض</button></div>
+      <div class="rpt-card"><span class="ri">💰</span><h3>تقرير الأرباح</h3><p>الفرق بين سعر الشراء والبيع لكل صنف ولكل فترة</p><br><button class="btn btn-primary btn-sm" onclick="alert('💰 جارٍ توليد تقرير الأرباح...')">📥 عرض</button></div>
+      <div class="rpt-card"><span class="ri">📉</span><h3>الأدوية الأقل مبيعاً</h3><p>الأصناف التي لم تتحرك من المخزن منذ أكثر من 30 يوم</p><br><button class="btn btn-primary btn-sm" onclick="alert('📉 جارٍ توليد التقرير...')">📥 عرض</button></div>
+      <div class="rpt-card"><span class="ri">📊</span><h3>تصدير Excel كامل</h3><p>تصدير جميع بيانات الصيدلية في ملف Excel واحد</p><br><button class="btn btn-primary btn-sm" onclick="alert('📊 جارٍ التصدير...')">📥 تصدير</button></div>
+    </div>
+  </div>
+</div>
 
+<!-- AI -->
+<div id="page-ai" class="page">
+  <div class="page-header">
+    <h2>🤖 <span>المساعد الذكي</span></h2>
+    <p>اسأله أي سؤال عن صيدليتك بالعربي — Ollama بيشتغل على جهازك بدون إنترنت</p>
+  </div>
+  <div class="content">
+    <div class="chat-layout">
+      <div class="chat-main">
+        <div class="chat-hdr">
+          <span class="ai-dot"></span>
+          <div>
+            <div style="font-weight:700;font-size:0.93rem">مساعد مخزن زلطه</div>
+            <div style="font-size:0.76rem;color:var(--gray)">Ollama — Llama 3.2 — بدون إنترنت ✓</div>
+          </div>
+        </div>
+        <div class="chat-msgs" id="chatMsgs">
+          <div class="msg ai"><div class="msg-av">🤖</div><div class="msg-bub">أهلاً! أنا مساعد مخزن زلطه 🏥<br>بقدر أجاوبك على أي سؤال عن المخزون والمبيعات والمديونات من بياناتك الفعلية.<br><strong>اسألني أي حاجة!</strong></div></div>
+          <div class="msg user"><div class="msg-av">👨‍⚕️</div><div class="msg-bub">إيه أكثر دواء اتباع الأسبوع ده؟</div></div>
+          <div class="msg ai"><div class="msg-av">🤖</div><div class="msg-bub">أكثر دواء اتباع الأسبوع ده هو <strong>باراموال أقراص</strong> بـ 423 وحدة،<br>تاني حاجة <strong>إيموكس ٥٠٠</strong> بـ 310 وحدة.<br>إجمالي مبيعات الأسبوع <strong>207,430 جنيه</strong> — زيادة 12% 📈</div></div>
+          <div class="msg user"><div class="msg-av">👨‍⚕️</div><div class="msg-bub">مين العملاء اللي ليهم دين كبير؟</div></div>
+          <div class="msg ai"><div class="msg-av">🤖</div><div class="msg-bub">عندك <strong>3 عملاء</strong> بديون كبيرة:<br>1. <strong>د. جمال الشرقاوي</strong> — <strong style="color:var(--red)">20,762 جنيه</strong> ⚠️<br>2. <strong>صيدلية الرحمة</strong> — <strong style="color:var(--red)">8,200 جنيه</strong><br>3. <strong>صيدلية الشفاء</strong> — <strong style="color:var(--orange)">8,500 جنيه</strong></div></div>
+        </div>
+        <div class="chat-inp-row">
+          <input class="chat-inp" id="chatInp" placeholder="اسألني عن المخزون أو المبيعات أو الديون..." onkeypress="if(event.key==='Enter')send()">
+          <button class="chat-send" onclick="send()">➤</button>
+        </div>
+      </div>
+      <div class="qq">
+        <h4>💡 أسئلة سريعة</h4>
+        <button class="qq-btn" onclick="ask('إيه الأدوية الناقصة دلوقتي؟')">📦 الأدوية الناقصة؟</button>
+        <button class="qq-btn" onclick="ask('أكثر دواء اتباع الشهر ده؟')">🏆 أكثر دواء مبيعاً؟</button>
+        <button class="qq-btn" onclick="ask('كام مبيعات النهارده؟')">💰 مبيعات النهارده؟</button>
+        <button class="qq-btn" onclick="ask('فيه أدوية هتنتهي صلاحيتها؟')">⏰ أدوية قاربت الانتهاء؟</button>
+        <button class="qq-btn" onclick="ask('مين العملاء اللي ليهم دين؟')">💳 عملاء ليهم دين؟</button>
+        <button class="qq-btn" onclick="ask('إيه بديل الأموكسيسيلين؟')">💊 بديل الأموكسيسيلين؟</button>
+        <button class="qq-btn" onclick="ask('قارن مبيعات هذا الشهر بالشهر اللي فات')">📊 مقارنة المبيعات؟</button>
+        <button class="qq-btn" onclick="ask('كام مجموع الديون للموردين؟')">🏭 ديوني للموردين؟</button>
+        <div style="margin-top:18px;padding:13px;background:rgba(0,200,150,0.05);border:1px solid rgba(0,200,150,0.2);border-radius:9px;">
+          <div style="font-size:0.77rem;color:var(--gray);margin-bottom:5px">⚡ يشتغل على</div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--accent)">Ollama — Llama 3.2</div>
+          <div style="font-size:0.75rem;color:var(--gray);margin-top:3px">100% على جهازك — بدون إنترنت</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-const drugs=[
-  {name:'باراسيتامول 500mg', bc:'6221024003487', qty:5,  buy:12, sell:20, exp:'2027-06-01', st:'warn'},
-  {name:'أموكسيسيلين 500mg', bc:'6221024007821', qty:4,  buy:35, sell:50, exp:'2026-04-28', st:'danger'},
-  {name:'أوميبرازول 20mg',   bc:'6221024001234', qty:44, buy:25, sell:40, exp:'2027-12-01', st:'ok'},
-  {name:'فيتامين D3 1000IU', bc:'6221024009988', qty:8,  buy:55, sell:70, exp:'2028-01-01', st:'warn'},
-  {name:'ميتفورمين 500mg',   bc:'6221024004455', qty:62, buy:18, sell:30, exp:'2027-09-01', st:'ok'},
-  {name:'أتورفاستاتين 20mg', bc:'6221024005566', qty:30, buy:45, sell:65, exp:'2027-11-01', st:'ok'},
-  {name:'كيتوكونازول كريم',  bc:'6221024006677', qty:7,  buy:60, sell:85, exp:'2026-05-15', st:'danger'},
-  {name:'فيتامين C فوار',    bc:'6221024008899', qty:8,  buy:28, sell:45, exp:'2027-08-01', st:'warn'},
-];
-const stMap={ok:{l:'جيد',c:'b-green'},warn:{l:'منخفض',c:'b-amber'},danger:{l:'تحذير',c:'b-red'}};
-
-function mg(b,s){return s>b?Math.round((s-b)/s*100)+'%':'خسارة'}
-
-function renderInv(list){
-  document.getElementById('inv-body').innerHTML=list.map(d=>`
-    <tr>
-      <td class="dn">${d.name}</td>
-      <td class="bc">${d.bc}</td>
-      <td>${d.qty}</td>
-      <td>${d.buy} ج</td>
-      <td class="pg">${d.sell} ج</td>
-      <td><span class="badge ${d.sell>d.buy?'b-green':'b-red'}">${mg(d.buy,d.sell)}</span></td>
-      <td style="font-size:11.5px">${d.exp}</td>
-      <td><span class="badge ${stMap[d.st].c}">${stMap[d.st].l}</span></td>
-      <td><button class="abt" onclick="editDrug('${d.name}','${d.bc}',${d.buy},${d.sell})">تعديل السعر</button></td>
-    </tr>`).join('');
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>{if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active');});
+  window.scrollTo(0,0);
 }
-renderInv(drugs);
-
-function filterInv(){
-  const q=document.getElementById('s-inv').value.toLowerCase();
-  renderInv(drugs.filter(d=>d.name.includes(q)||d.bc.includes(q)));
+function switchTab(t){
+  document.querySelectorAll('.debt-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.debt-tab').forEach(b=>{b.classList.remove('c-active');b.classList.remove('s-active');});
+  document.getElementById('panel-'+t).classList.add('active');
+  if(t==='c'){document.getElementById('tab-c').classList.add('c-active');}
+  else{document.getElementById('tab-s').classList.add('s-active');}
 }
-
-function editDrug(name,bc,buy,sell){
-  goto('recv',document.querySelectorAll('.ni')[2]);
-  document.getElementById('r-name').value=name;
-  document.getElementById('r-bc').value=bc;
-  document.getElementById('r-buy').value=buy;
-  document.getElementById('r-sell').value=sell;
-  calcM();
+function upClient(v){
+  const b=document.getElementById('cbox');
+  if(v.length>2){b.style.display='block';document.getElementById('cname').textContent=v;}
+  else b.style.display='none';
 }
-
-let si={inv:0,recv:0,pos:0};
-function scan(ctx){
-  const d=drugs[si[ctx]%drugs.length]; si[ctx]++;
-  if(ctx==='inv'){document.getElementById('s-inv').value=d.bc;filterInv();}
-  else if(ctx==='recv'){document.getElementById('r-bc').value=d.bc;document.getElementById('r-name').value=d.name;document.getElementById('r-buy').value=d.buy;document.getElementById('r-sell').value=d.sell;calcM();}
-  else addToCart(d);
+function addRow(){
+  const t=document.getElementById('sitems');
+  const n=t.rows.length+1;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${n}</td><td><input placeholder="اسم الدواء"></td><td><input value="1" style="width:45px" oninput="cr(this)"></td><td><input value="0" style="width:60px" oninput="cr(this)"></td><td><input value="0" style="width:45px" oninput="cr(this)"></td><td class="rt">0.00</td><td><input placeholder="MM/YYYY" style="width:72px"></td><td><button class="btn btn-red btn-sm" onclick="rmRow(this)">✕</button></td>`;
+  t.appendChild(tr);
 }
-
-function calcM(){
-  const b=+document.getElementById('r-buy').value, s=+document.getElementById('r-sell').value;
-  const el=document.getElementById('m-show');
-  if(b&&s&&s>b){const m=Math.round((s-b)/s*100);el.textContent=m+'%';el.style.color=m>20?'var(--green)':'var(--amber)';}
-  else if(b&&s&&s<=b){el.textContent='خسارة!';el.style.color='var(--red)';}
-  else{el.textContent='—';el.style.color='var(--text3)';}
+function rmRow(b){b.closest('tr').remove();}
+function cr(i){
+  const r=i.closest('tr');const c=r.querySelectorAll('input');
+  const t=(parseFloat(c[1].value)||0)*(parseFloat(c[2].value)||0)*(1-(parseFloat(c[3].value)||0)/100);
+  r.querySelector('.rt').textContent=t.toFixed(2);
 }
-
-function saveRecv(){
-  if(!document.getElementById('r-name').value){alert('أدخل اسم الدواء');return;}
-  const ok=document.getElementById('r-ok');
-  ok.style.display='block';setTimeout(()=>ok.style.display='none',3000);
-}
-
-let cart=[];
-function addToCart(drug){
-  const d=drug||drugs[Math.floor(Math.random()*drugs.length)];
-  const ex=cart.find(c=>c.bc===d.bc);
-  if(ex)ex.qty++;else cart.push({...d,qty:1});
-  renderCart();
-}
-function chgQty(i,delta){cart[i].qty+=delta;if(cart[i].qty<=0)cart.splice(i,1);renderCart();}
-function renderCart(){
-  const lst=document.getElementById('cart-list'), emp=document.getElementById('cart-empty');
-  if(!cart.length){lst.innerHTML='';emp.style.display='block';recalc();return;}
-  emp.style.display='none';
-  lst.innerHTML=cart.map((c,i)=>`
-    <div class="ci">
-      <div style="flex:1"><div class="ci-name">${c.name}</div><div class="ci-pr">${c.sell} ج × ${c.qty}</div></div>
-      <div class="qc"><button class="qb" onclick="chgQty(${i},-1)">−</button><span class="qn">${c.qty}</span><button class="qb" onclick="chgQty(${i},1)">+</button></div>
-      <div class="ct">${c.sell*c.qty} ج</div>
-    </div>`).join('');
-  recalc();
-}
-function recalc(){
-  const sub=cart.reduce((s,c)=>s+c.sell*c.qty,0);
-  const d=+document.getElementById('disc').value||0;
-  const total=Math.round(sub*(1-d/100));
-  document.getElementById('c-count').textContent=cart.reduce((s,c)=>s+c.qty,0);
-  document.getElementById('c-sub').textContent=sub+' ج';
-  document.getElementById('c-total').textContent=total+' ج';
-}
-function clearCart(){cart=[];renderCart();}
-function checkout(){
-  if(!cart.length){alert('الفاتورة فارغة!');return;}
-  alert('تم إتمام البيع!\nالإجمالي: '+document.getElementById('c-total').textContent+'\n\nجاري طباعة الفاتورة...');
-  clearCart();
-}
-
-const titles={inv:'لوحة التحكم',pos:'نقطة البيع (POS)',recv:'استلام بضاعة / تعديل سعر',customers:'العملاء والوصفات',alerts:'التنبيهات',reports:'التقارير والأرباح',suppliers:'الموردون',ai:'AI مساعد الصيدلي'};
-function goto(id,el){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ni,.ai-btn').forEach(n=>n.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  if(el)el.classList.add('active');
-  document.getElementById('pg-title').textContent=titles[id]||id;
-}
-
-document.getElementById('top-date').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-
-const kb={
-  'وارفارين':'تداخل خطير بين الوارفارين والأسبرين:\n\n• كلاهما يمنعان تخثر الدم بآليتين مختلفتين\n• الاستخدام المتزامن يزيد خطر النزيف الشديد بنسبة كبيرة\n• إذا ضروري: أسبرين 75mg فقط مع مراقبة INR أسبوعياً\n• البديل الأفضل: باراسيتامول للألم\n• يجب إبلاغ الطبيب فوراً عند الجمع بينهما',
-  'أموكسيسيلين':'بدائل الأموكسيسيلين عند حساسية البنسلين:\n\n✅ الخيارات الآمنة:\n• كلاريثروميسين 500mg مرتين يومياً (أمراض تنفسية)\n• أزيثروميسين 500mg يوم واحد ثم 250mg × 4 أيام\n• دوكسيسيكلين 100mg للبالغين فقط\n• ليفوفلوكساسين 500mg للعدوى الشديدة\n\n⚠️ تنبيه: 5-10% من المرضى الحساسين للبنسلين قد يتحساسون من السيفالوسبورينات',
-  'جرعة':'جرعة الباراسيتامول للأطفال:\n\n• الجرعة الصحيحة: 10-15 mg/kg كل 4-6 ساعات\n• طفل 10kg → 100-150mg لكل جرعة\n• طفل 20kg → 200-300mg لكل جرعة\n• طفل 30kg → 300-450mg لكل جرعة\n\n⛔ الحدود القصوى:\n• لا أكثر من 4 جرعات في 24 ساعة\n• الجرعة اليومية لا تتجاوز 75mg/kg\n• ممنوع لأطفال أقل من 3 شهور بدون طبيب',
-  'ميتفورمين':'تداخلات الميتفورمين المهمة:\n\n🚫 ممنوع معه:\n• الكحول: خطر حماض لبني شديد\n• صبغة الأشعة: أوقفه 48 ساعة قبل وبعد التصوير\n\n⚠️ احذر معه:\n• كيتوكونازول: يرفع مستوى الميتفورمين\n• فيروسيميد وسيميتيدين: يزيدان تركيزه\n• الكينولونات: تزيد تأثير خفض السكر → خطر نقص سكر',
-  'مبيعات':'تحليل مبيعات صيدلية د. جمال الشرقاوي:\n\n📊 الملخص:\n• أعلى ربحية: باراسيتامول وأوميبرازول (هامش 30%)\n• أعلى إيراد: أموكسيسيلين (9,000 ج/شهر)\n• إجمالي الربح الصافي: 11,200 ج (23%)\n\n⚠️ تحتاج اهتمام فوري:\n• باراسيتامول: 5 علب فقط — اطلب الآن!\n• أموكسيسيلين: مخزون منخفض + صلاحية قريبة\n\n✅ توصيات:\n• ارفع سعر فيتامين D3 لتحسين الهامش\n• زيادة مخزون المنتجات الأكثر طلباً',
-  'ضغط':'أدوية ضغط الدم الآمنة للحامل:\n\n✅ آمنة ومعتمدة:\n• ميثيل دوبا (Aldomet) — الخيار الأول دولياً\n• لابيتالول (Trandate) — بديل ممتاز خاصة للحالات الشديدة\n• نيفيديبين SR — للضغط المرتفع في الثلث الثالث\n• هيدرالازين IV — للأزمات الحادة في المستشفى\n\n❌ ممنوعة تماماً في الحمل:\n• ACE inhibitors (كابتوبريل، ليزينوبريل، راميبريل)\n• ARBs (لوزارتان، فالسارتان، تيلميسارتان)\n• مدرات البول في الحمل الطبيعي',
-  'أوميبرازول':'الفرق بين أوميبرازول وبانتوبرازول:\n\n• كلاهما من مجموعة مثبطات مضخة البروتون (PPI)\n• أوميبرازول: أقدم وأرخص، تداخلات دوائية أكثر مع كلوبيدوجريل\n• بانتوبرازول: أقل تداخلاً مع الأدوية الأخرى، مفضل مع مرضى القلب\n• الفعالية متشابهة في علاج قرحة المعدة والارتجاع\n• للأمان مع الكلوبيدوجريل: استخدم بانتوبرازول أو إيزوميبرازول',
-  'جرعة زائدة':'أعراض جرعة زائدة من الباراسيتامول:\n\n⚠️ المراحل:\n• 0-24 ساعة: غثيان، قيء، شحوب — قد تبدو بسيطة\n• 24-72 ساعة: ألم في الكبد، ارتفاع الإنزيمات\n• 72-96 ساعة: فشل كبدي محتمل\n\n🚨 الجرعة الخطرة: أكثر من 150mg/kg أو 7.5g للبالغين\n\nالعلاج الفوري:\n• تحضير فحم نشط خلال أول ساعة\n• N-acetylcysteine (NAC) هو الترياق\n• التوجه للطوارئ فوراً ولا تنتظر الأعراض!',
+const aiR={
+  'ناقص':'عندك <strong>4 أصناف</strong> تحت الحد الأدنى:<br>• موبيراكس ٢% — متبقي 8 (الحد: 20) ⚠️<br>• ليفيا بلس — متبقي 3 (الحد: 15) 🚨<br>• DERMOVATE CREAM — متبقي 6<br>• FUCICORT CREAM — متبقي 9',
+  'أكثر':'أكثر دواء اتباع الشهر ده هو <strong>باراموال أقراص</strong> بـ 2,847 وحدة بإجمالي 108,186 جنيه 🏆',
+  'النهارده':'مبيعات النهارده <strong>54,230 جنيه</strong> من 23 فاتورة — أحسن يوم الأسبوع ده! 📈',
+  'صلاحية':'عندك <strong>3 أصناف</strong> ستنتهي خلال 90 يوم:<br>• أفيميو نسقط — 04/2026 🚨<br>• الوندا ٠.٥ مجم — 01/2027<br>• ليفيا بلس — 12/2026',
+  'دين':'إجمالي مديونيات العملاء <strong style="color:var(--red)">87,430 جنيه</strong>.<br>الأكبر: د. جمال الشرقاوي <strong>20,762 جنيه</strong> متأخر 30+ يوم.',
+  'بديل':'بدائل الأموكسيسيلين:<br>• <strong>إيموكس ٥٠٠mg</strong> ✓ — 2,510 وحدة موجودة<br>• <strong>أوجمنتين</strong> ✓ — موجود',
+  'مقارن':'مبيعات أبريل: <strong>382,400 جنيه</strong> مقابل مارس: 341,200 جنيه — زيادة <strong style="color:var(--accent)">+12.1%</strong> 📈',
+  'مورد':'ديونك للموردين: <strong style="color:var(--gold)">42,800 جنيه</strong><br>أقرب موعد: مستودع الشفاء <strong>4,200 جنيه</strong> في 15/04/2026 ⚠️',
 };
-
-function now(){return new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}
-
-async function askAI(preset){
-  const inp=document.getElementById('ai-q');
-  const q=preset||inp.value.trim();
-  if(!q)return;
-  inp.value='';
-  const msgs=document.getElementById('ai-msgs');
-  msgs.innerHTML+=`<div class="msg msg-user"><div class="mb">${q}</div><div class="mt">${now()}</div></div>`;
-  const typ=document.getElementById('typing');
-  typ.classList.add('on');
-  msgs.appendChild(typ);
-  msgs.scrollTop=msgs.scrollHeight;
-  await new Promise(r=>setTimeout(r,800+Math.random()*600));
-  typ.classList.remove('on');
-  let reply;
-  try{
-    const res=await fetch('http://localhost:11434/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'llama3.2',stream:false,messages:[{role:'system',content:'أنت مساعد صيدلاني خبير لصيدلية د. جمال الشرقاوي. أجب بالعربية بشكل واضح ومختصر ومفيد.'},{role:'user',content:q}]})});
-    if(res.ok){const d=await res.json();reply=d.message?.content||'لم أتمكن من الإجابة.';}
-    else throw 0;
-  }catch(_){
-    const key=Object.keys(kb).find(k=>q.includes(k.substring(0,4)));
-    reply=key?kb[key]:'Ollama غير متاح حالياً على جهازك.\n\nلتفعيله:\n1. نزّل Ollama من ollama.com\n2. في CMD اكتب: ollama pull llama3.2\n3. أعد فتح البرنامج\n\nيمكنني الإجابة من قاعدتي المعرفية عن:\nوارفارين، أموكسيسيلين، جرعة أطفال، ميتفورمين، مبيعات، ضغط حامل، أوميبرازول، جرعة زائدة باراسيتامول';
-  }
-  msgs.innerHTML+=`<div class="msg msg-bot"><div class="mb">${reply}</div><div class="mt">${now()}</div></div>`;
-  msgs.scrollTop=msgs.scrollHeight;
+function ask(q){document.getElementById('chatInp').value=q;send();}
+function send(){
+  const i=document.getElementById('chatInp');const m=i.value.trim();if(!m)return;
+  const ms=document.getElementById('chatMsgs');
+  ms.innerHTML+=`<div class="msg user"><div class="msg-av">👨‍⚕️</div><div class="msg-bub">${m}</div></div>`;
+  i.value='';ms.scrollTop=ms.scrollHeight;
+  setTimeout(()=>{
+    let r='في النظام الحقيقي هرد من Ollama بناءً على بيانات صيدليتك الفعلية 🤖';
+    for(const[k,v]of Object.entries(aiR)){if(m.includes(k)){r=v;break;}}
+    ms.innerHTML+=`<div class="msg ai"><div class="msg-av">🤖</div><div class="msg-bub">${r}</div></div>`;
+    ms.scrollTop=ms.scrollHeight;
+  },700);
 }
 </script>
 </body>
